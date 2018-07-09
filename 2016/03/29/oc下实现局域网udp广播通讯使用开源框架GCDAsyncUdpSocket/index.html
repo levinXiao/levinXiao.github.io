@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="#UDP简介 UDP是OSI参考模型中一种无连接的传输层协议，它主要用于不要求分组顺序到达的传输中，分组传输顺序的检查与排序由应用层完成，提供面向事务的简单不可靠信息传送服务。">
+<meta name="keywords" content="oc,socket,GCDAsyncUdpSocket,tcp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket">
+<meta property="og:url" content="http://xiaoyu666.com/2016/03/29/oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="#UDP简介 UDP是OSI参考模型中一种无连接的传输层协议，它主要用于不要求分组顺序到达的传输中，分组传输顺序的检查与排序由应用层完成，提供面向事务的简单不可靠信息传送服务。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket">
+<meta name="twitter:description" content="#UDP简介 UDP是OSI参考模型中一种无连接的传输层协议，它主要用于不要求分组顺序到达的传输中，分组传输顺序的检查与排序由应用层完成，提供面向事务的简单不可靠信息传送服务。">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/03/29/oc下实现局域网udp广播通讯使用开源框架GCDAsyncUdpSocket/">
+            <time datetime="2016-03-29T13:11:10.000Z" itemprop="datePublished">2016-03-29</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/GCDAsyncUdpSocket/">GCDAsyncUdpSocket</a>, <a class="tag-link" href="/tags/oc/">oc</a>, <a class="tag-link" href="/tags/socket/">socket</a>, <a class="tag-link" href="/tags/tcp/">tcp</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>#UDP简介</p>
+<p>UDP是OSI参考模型中一种无连接的传输层协议，它主要用于不要求分组顺序到达的传输中，分组传输顺序的检查与排序由应用层完成，提供面向事务的简单不可靠信息传送服务。</p>
+<a id="more"></a>
+<p>UDP 协议基本上是IP协议与上层协议的接口。UDP协议适用端口分别运行在同一台设备上的多个应用程序。udp协议通信在发送数据包的时候是不用绑定端口的，系统会自动分配端口，只有在发送消息的时候才需要绑定端口。</p>
+<p>网络上已经有编写好的开源类库GCDAsyncSocket 和GCDAsyncUdpSocket 这是GCD版的 比AsyncSocket 和AsyncUdpSocket估计要好用点 用法也很简单，跟http很类似 只要指定服务器的ip和端口 然后再实现各种回调就行。</p>
+<p>socket默认情况下就是采用TCP协议，创建之后通信双方的socket会一直保持连接，除非手动close或因为网络原因close，所以，此种状况对服务器而言是有一定资源消耗的，这种模式只适应与对服务器小规模的访问，特别是对于实时性很高的应用，如视频直播、呼叫系统等，而http一般都是短连接的，一次请求完之后客户端便会于服务端端开连接http是凌驾于socket之上的高级协议，而socket是比较底层的通讯方式，只是建立了一个连接通道，具体上面传输什么样的数据，按照什么格式传输，需要你自己定义，所以这就需要重新编写定义服务端与客户端的所应遵循的规定，而http已经被前人们定义使用过了。</p>
+<p>#####<a href="https://github.com/roustem/AsyncSocket&quot;" target="_blank" rel="noopener">GCDAsyncUdpSocket ARC版下载地址(github)</a></p>
+<p>#代码</p>
+<p>初始化GCDAsyncUdpSocket类</p>
+<p>共有四个初始化方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (id)init;</span><br><span class="line"></span><br><span class="line">- (id)initWithSocketQueue:(dispatch_queue_t)sq;</span><br><span class="line"></span><br><span class="line">- (id)initWithDelegate:(id)aDelegate delegateQueue:(dispatch_queue_t)dq;</span><br><span class="line"></span><br><span class="line">- (id)initWithDelegate:(id)aDelegate delegateQueue:(dispatch_queue_t)dq socketQueue:(dispatch_queue_t)sq;</span><br></pre></td></tr></table></figure>
+<p>在使用GCDAsyncUdpSocket传输数据前必须设置代理和代理队列，否则就会报错。</p>
+<p>#####socketQueue是可选的，如果不设置系统会置为NULL，这样GCDAsyncUdpSocket会自动创建一个自己的socketqueue</p>
+<p>#####代理队列 delegateQueue和socketQueue可以一样。</p>
+<p>这里已经绑定了delegate 不用在类声明中重复实现这个代理了。</p>
+<p>#消息发送</p>
+<p>若客户端只向服务端发送消息而不用接收到其他的udp消息就可以不用绑定端口</p>
+<p>##消息发送的方法</p>
+<p>该方法只能用于已经连接了的Socket中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (void)sendData:(NSData *)data withTimeout:(NSTimeInterval)timeout tag:(long)tag;</span><br><span class="line"></span><br><span class="line">该方法不能用于已经连接了socket中，只能用于没有长连接的socket中</span><br><span class="line"></span><br><span class="line">- (void)sendData:(NSData *)data toHost:(NSString *)host port:(uint16_t)port</span><br><span class="line"></span><br><span class="line">withTimeout:(NSTimeInterval)timeout tag:(long)tag;</span><br><span class="line"></span><br><span class="line">该方法不能用于已经连接了socket中，只能用于没有长连接的socket中</span><br><span class="line"></span><br><span class="line">- (void)sendData:(NSData *)data toAddress:(NSData *)remoteAddr withTimeout:(NSTimeInterval)timeout tag:(long)tag;</span><br></pre></td></tr></table></figure>
+<p>##例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (IBAction)sendToServer:(id)sender &#123;</span><br><span class="line"></span><br><span class="line">     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:@&quot;my1&quot;,            </span><br><span class="line">               @&quot;my1&quot;,</span><br><span class="line">              @&quot;my2&quot;, @&quot;扣篮大赛&quot;,</span><br><span class="line">              @&quot;my3&quot;, @&quot;贷记卡&quot;,</span><br><span class="line">              @&quot;my4&quot;, @&quot;我到了&quot;, nil];</span><br><span class="line"></span><br><span class="line">    NSString *str = [[SBJson4Writer alloc]stringWithObject:dic];</span><br><span class="line"></span><br><span class="line">    NSLog(@&quot;%@&quot;,str);</span><br><span class="line"></span><br><span class="line">    NSString *host = @&quot;224.0.0.1&quot;;</span><br><span class="line"></span><br><span class="line">    int port = 3339;</span><br><span class="line"></span><br><span class="line">    NSData *data = [msg dataUsingEncoding:NSUTF8StringEncoding];</span><br><span class="line"></span><br><span class="line">//host是在服务端设置的host，port也是服务端绑定的port，上文说过如果客户端不需要接收消息，就不用绑定端口</span><br><span class="line"></span><br><span class="line">    [udpSocket sendData:data toHost:host port:port withTimeout:-1 tag:tag];</span><br><span class="line"></span><br><span class="line">    NSLog(@&quot;SENT (%i): %@&quot;, (int)tag, msg);</span><br><span class="line"></span><br><span class="line">    tag++;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>##端口绑定和广播开启</p>
+<p>方法：</p>
+<p>以下方法用于服务端，客户端可以跳过</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//绑定端口</span><br><span class="line"></span><br><span class="line">- (BOOL)bindToPort:(uint16_t)port error:(NSError **)errPtr;</span><br><span class="line"></span><br><span class="line">- (BOOL)bindToPort:(uint16_t)port interface:(NSString *)interface error:(NSError **)errPtr;</span><br><span class="line"></span><br><span class="line">//绑定到一个地址，可不设置</span><br><span class="line"></span><br><span class="line">- (BOOL)bindToAddress:(NSData *)localAddr error:(NSError **)errPtr;</span><br><span class="line"></span><br><span class="line">//绑定到一个HOST和端口</span><br><span class="line"></span><br><span class="line">- (BOOL)connectToHost:(NSString *)host onPort:(uint16_t)port error:(NSError **)errPtr;</span><br><span class="line"></span><br><span class="line">//开启广播，若不实现这个方法，默认是关闭的</span><br><span class="line"></span><br><span class="line">- (BOOL)enableBroadcast:(BOOL)flag error:(NSError **)errPtr;</span><br></pre></td></tr></table></figure>
+<p>例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- (IBAction)startServer:(id)sender &#123;</span><br><span class="line"></span><br><span class="line">    int port = 3339;</span><br><span class="line"></span><br><span class="line">    NSError *error = nil;</span><br><span class="line"></span><br><span class="line">    if (![udpServer bindToPort:port error:&amp;error]) &#123;</span><br><span class="line"></span><br><span class="line">        NSLog(@&quot;Error starting server (bind): %@&quot;, error);</span><br><span class="line"></span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (![udpServer enableBroadcast:YES error:&amp;error]) &#123;</span><br><span class="line"></span><br><span class="line">        NSLog(@&quot;Error enableBroadcast (bind): %@&quot;, error);</span><br><span class="line"></span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">    if (![udpServer joinMulticastGroup:@&quot;224.0.0.1&quot;  error:&amp;error]) &#123;</span><br><span class="line"></span><br><span class="line">        NSLog(@&quot;Error joinMulticastGroup (bind): %@&quot;, error);</span><br><span class="line"></span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (![udpServer beginReceiving:&amp;error]) &#123;</span><br><span class="line"></span><br><span class="line">        [udpServer close];</span><br><span class="line"></span><br><span class="line">        NSLog(@&quot;Error starting server (recv): %@&quot;, error);</span><br><span class="line"></span><br><span class="line">        return;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    NSLog(@&quot;udp servers success starting %hd&quot;, [udpServer localPort]);</span><br><span class="line"></span><br><span class="line">    isRunning =true;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>####特别说明：</p>
+<p>若客户端也要实现接收到服务器发送的消息，也必须实现上述代码，只是不需要实现enableBraodcast:error:这个方法，这样在客户端就可以接收到消息了</p>
+<p>另外，客户端的端口号不需要与服务端的端口号保持一致。这时候，从另外一个角度来说，客户端变成了一个简易的服务端。</p>
+<p>###代理方法 GCDAsyncUdpSocketDelegate</p>
+<p>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//在绑定address成功后回调</span><br><span class="line"></span><br><span class="line">- (void)udpSocket:(GCDAsyncUdpSocket *)sock didConnectToAddress:(NSData *)address;</span><br><span class="line"></span><br><span class="line">- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotConnect:(NSError *)error;</span><br><span class="line"></span><br><span class="line">//发送消息后回调，不关心是否成功发送。</span><br><span class="line"></span><br><span class="line">- (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag;</span><br><span class="line"></span><br><span class="line">- (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error;</span><br><span class="line"></span><br><span class="line">//在接收到消息后回调这个方法</span><br><span class="line"></span><br><span class="line">- (void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data</span><br><span class="line"></span><br><span class="line">fromAddress:(NSData *)address</span><br><span class="line"></span><br><span class="line">withFilterContext:(id)filterContext;</span><br><span class="line"></span><br><span class="line">//在Socket连接关闭后回调</span><br><span class="line"></span><br><span class="line">- (void)udpSocketDidClose:(GCDAsyncUdpSocket *)sock withError:(NSError *)error;</span><br></pre></td></tr></table></figure>
+<p>##例子：</p>
+<p>服务端接收到消息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">-(void)udpSocket:(GCDAsyncUdpSocket *)sock didReceiveData:(NSData *)data fromAddress:(NSData *)address withFilterContext:(id)filterContext&#123;</span><br><span class="line"></span><br><span class="line">    NSLog(@&quot;%@%d&quot;,[[NSString alloc]initWithData:data encoding:NSUTF8StringEncoding],[sock connectedPort]);</span><br><span class="line"></span><br><span class="line">    [udpServer sendData:data toAddress:address withTimeout:-1 tag:0];</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里做了两件事情，第一件事情是将接收到的消息打印出来，第二件事情就是重新发送一个消息给来源接收。这样目的是是发送端知道接收端己收到消息。从而做出相应的处理。</p>
+<p>#####<a href="http://download.csdn.net/detail/xiaoamani/7456259&quot;" target="_blank" rel="noopener">Demo下载(CSDN)</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/08/06/Docker容器配置gogs/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    Docker容器配置gogs
+                
+            </div>
+        </a>
+    
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

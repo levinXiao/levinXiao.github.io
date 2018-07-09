@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>自定义同步和异步 NSOperation 代码模板 | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="同步的 NSOperation在实际情况中，定义同步的 NSOperation 比较简单，不需要显式的设置 finish 的值 同步的 NSOperation 模板 .h123456#import &amp;lt;Foundation/Foundation.h&amp;gt;//非并发@interface XXXOperation : NSOperation@end">
+<meta name="keywords" content="iOS,多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自定义同步和异步 NSOperation 代码模板">
+<meta property="og:url" content="http://xiaoyu666.com/2018/05/16/自定义同步和异步-NSOperation-代码模板/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="同步的 NSOperation在实际情况中，定义同步的 NSOperation 比较简单，不需要显式的设置 finish 的值 同步的 NSOperation 模板 .h123456#import &amp;lt;Foundation/Foundation.h&amp;gt;//非并发@interface XXXOperation : NSOperation@end">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="自定义同步和异步 NSOperation 代码模板">
+<meta name="twitter:description" content="同步的 NSOperation在实际情况中，定义同步的 NSOperation 比较简单，不需要显式的设置 finish 的值 同步的 NSOperation 模板 .h123456#import &amp;lt;Foundation/Foundation.h&amp;gt;//非并发@interface XXXOperation : NSOperation@end">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-自定义同步和异步-NSOperation-代码模板" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            自定义同步和异步 NSOperation 代码模板
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/05/16/自定义同步和异步-NSOperation-代码模板/">
+            <time datetime="2018-05-16T09:29:36.000Z" itemprop="datePublished">2018-05-16</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>, <a class="tag-link" href="/tags/多线程/">多线程</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h2 id="同步的-NSOperation"><a href="#同步的-NSOperation" class="headerlink" title="同步的 NSOperation"></a>同步的 <strong>NSOperation</strong></h2><p>在实际情况中，定义同步的 <strong>NSOperation</strong> 比较简单，不需要显式的设置 <strong>finish</strong> 的值</p>
+<p><strong>同步的 NSOperation 模板</strong></p>
+<h3 id="h"><a href="#h" class="headerlink" title=".h"></a>.h</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">//非并发</span><br><span class="line">@interface XXXOperation : NSOperation</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="m"><a href="#m" class="headerlink" title=".m"></a>.m</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@interface XXXOperation ()</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation XXXOperation</span><br><span class="line"></span><br><span class="line">#pragma mark -</span><br><span class="line">- (void)start &#123;</span><br><span class="line">    NSLog(@&quot;main&quot;);</span><br><span class="line">    @try &#123;</span><br><span class="line">        @autoreleasepool &#123;</span><br><span class="line">            //添加自动释放池 是因为 子线程拿不到主线程的自动释放池</span><br><span class="line">            if ([self isCancelled]) &#123;</span><br><span class="line">                NSLog(@&quot;======&gt;&gt;[operation] operation isCancelled YES&quot;);</span><br><span class="line">                return;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                NSLog(@&quot;======&gt;&gt; [operation] operation start&quot;);</span><br><span class="line">                NSInteger i = 0;</span><br><span class="line">                while (i &lt; 5)&#123;</span><br><span class="line">                    NSLog(@&quot;i : %ld&quot;,(long)i);</span><br><span class="line">                    i++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    @catch (NSException *exception) &#123;</span><br><span class="line">      NSLog(@&quot;======&gt;&gt; [operation] exception catch&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;======&gt;&gt; [operation] operation finished&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)cancel &#123;</span><br><span class="line">    [super cancel];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    [self timerTimeoutInvalid];</span><br><span class="line">    NSLog(@&quot;======&gt;&gt;[operation] operation:%p dealloc &quot;,self);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h2 id="异步的-NSOperation"><a href="#异步的-NSOperation" class="headerlink" title="异步的 NSOperation"></a>异步的 <strong>NSOperation</strong></h2><p>异步的 <strong>NSOperation</strong> 场景从字面上不是非常容易理解，简单来说：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">我需要构建一个线程池，该线程池用来从网络下下载图片，考虑到性能的需求，我需要能够动态的设置线程池能同时下载图片的数量</span><br><span class="line">现在假设这个数量默认为3个，即我需要开启三个 NSOperation 来下载图片</span><br><span class="line">现在问题来了，下载图片这个过程显然使异步的，在同步的 NSOperation 中已经不能满足我们的需求</span><br><span class="line">所以，异步的NSOperation就成了解决方案</span><br></pre></td></tr></table></figure>
+<p>从苹果的官方文档上，我们可以看出来 <strong>NSOperation</strong> 的结束是由 <strong>finished</strong> 方法来进行判定<br>在 <strong>NSOperation</strong> 中 <strong>finished</strong> 的getter方法是 <strong>isFinished</strong></p>
+<p><strong>下面是一个异步的 NSOperation 模板</strong></p>
+<h2 id="h-1"><a href="#h-1" class="headerlink" title=".h"></a>.h</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line"></span><br><span class="line">//非并发</span><br><span class="line">@interface XXXOperation : NSOperation</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<h2 id="m-1"><a href="#m-1" class="headerlink" title=".m"></a>.m</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">@interface XXXOperation ()</span><br><span class="line"></span><br><span class="line">// getter=isFinished 必须指定，如果不指定需要 子类覆写 isFinished 方法</span><br><span class="line">// getter=isExecuting 同上</span><br><span class="line">@property (nonatomic, assign, getter=isFinished) BOOL finished;</span><br><span class="line">@property (nonatomic, assign, getter=isExecuting) BOOL executing;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation XXXOperation</span><br><span class="line"></span><br><span class="line">@synthesize finished = _finished;</span><br><span class="line">@synthesize executing = _executing;</span><br><span class="line"></span><br><span class="line">#pragma mark -</span><br><span class="line">- (void)start &#123;</span><br><span class="line">    NSLog(@&quot;main&quot;);</span><br><span class="line">    @try &#123;</span><br><span class="line">        @autoreleasepool &#123;</span><br><span class="line">          //添加自动释放池 是因为 子线程拿不到主线程的自动释放池</span><br><span class="line">            if ([self isCancelled]) &#123;</span><br><span class="line">                NSLog(@&quot;======&gt;&gt;[operation] operation isCancelled YES&quot;);</span><br><span class="line">                self.finished = YES;</span><br><span class="line">                return;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                self.executing = YES;</span><br><span class="line">                NSLog(@&quot;======&gt;&gt;[operation] operation starting...&quot;);</span><br><span class="line">                @weakify(self);</span><br><span class="line">                void (^block)() = ^()&#123;</span><br><span class="line">                    @strongify(self);</span><br><span class="line">                    self.finished = YES;</span><br><span class="line">                    self.executing = NO;</span><br><span class="line">                &#125;;</span><br><span class="line">                [self startOperationComplete:block];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    @catch (NSException *exception) &#123;</span><br><span class="line">      NSLog(@&quot;======&gt;&gt; [operation] exception catch&quot;);</span><br><span class="line">      self.finished = YES;</span><br><span class="line">      self.executing = NO;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)startOperationComplete:(void(^)())complete &#123;</span><br><span class="line">   //测试代码</span><br><span class="line">    NSLog(@&quot;======&gt;&gt; [operation] operation started&quot;);</span><br><span class="line">    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_current_queue(), ^&#123;</span><br><span class="line">       if (complete) complete();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setFinished:(BOOL)finished &#123;</span><br><span class="line">    NSLog(@&quot;======&gt;&gt; [operation] operation will finish&quot;);</span><br><span class="line">    [self willChangeValueForKey:@&quot;isFinished&quot;];</span><br><span class="line">    _finished = finished;</span><br><span class="line">    [self didChangeValueForKey:@&quot;isFinished&quot;];</span><br><span class="line">    NSLog(@&quot;======&gt;&gt; [operation] operation finished&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)setExecuting:(BOOL)executing &#123;</span><br><span class="line">    [self willChangeValueForKey:@&quot;isExecuting&quot;];</span><br><span class="line">    _executing = executing;</span><br><span class="line">    [self didChangeValueForKey:@&quot;isExecuting&quot;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)cancel &#123;</span><br><span class="line">    [super cancel];</span><br><span class="line">    NSLog(@&quot;======&gt;&gt; [operation] cancel&quot;);</span><br><span class="line">    // 如果正在执行中则表示已经start过，可以将isFinished设为yes</span><br><span class="line">    [self timerTimeoutInvalid];</span><br><span class="line">    if (self.isExecuting) &#123;</span><br><span class="line">        self.finished = YES;</span><br><span class="line">        self.executing = NO;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    [self timerTimeoutInvalid];</span><br><span class="line">    NSLog(@&quot;======&gt;&gt;[operation] operation:%p dealloc &quot;,self);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2018/02/05/BlockMarcoUnit @weakify @strongify 一个快速防止 block retain cycle 的开源 marco/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">BlockMarcoUnit @weakify @strongify 一个快速防止 block retain cycle 的开源 marco</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

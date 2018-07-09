@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>通过jenkins搭建基本iOS-app的持续交付平台 | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="平时我们开发完成IOS项目，需要打包给测试人员进行测试。其中的过程需要重复进行：修改配置项–编译—连接设备–运行打包–debug进设备中–然后交给等待的测试人员。现有成熟的持续集成Jenkins解决方案，并且该方案也提供了Xcode插件的支持，可以讲上述过程封装成一键解决方案。">
+<meta name="keywords" content="iOS,macOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="通过jenkins搭建基本iOS-app的持续交付平台">
+<meta property="og:url" content="http://xiaoyu666.com/2016/08/10/通过jenkins搭建基本iOS-app的持续交付平台/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="平时我们开发完成IOS项目，需要打包给测试人员进行测试。其中的过程需要重复进行：修改配置项–编译—连接设备–运行打包–debug进设备中–然后交给等待的测试人员。现有成熟的持续集成Jenkins解决方案，并且该方案也提供了Xcode插件的支持，可以讲上述过程封装成一键解决方案。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="通过jenkins搭建基本iOS-app的持续交付平台">
+<meta name="twitter:description" content="平时我们开发完成IOS项目，需要打包给测试人员进行测试。其中的过程需要重复进行：修改配置项–编译—连接设备–运行打包–debug进设备中–然后交给等待的测试人员。现有成熟的持续集成Jenkins解决方案，并且该方案也提供了Xcode插件的支持，可以讲上述过程封装成一键解决方案。">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-通过jenkins搭建基本iOS-app的持续交付平台" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            通过jenkins搭建基本iOS-app的持续交付平台
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/08/10/通过jenkins搭建基本iOS-app的持续交付平台/">
+            <time datetime="2016-08-10T08:10:49.000Z" itemprop="datePublished">2016-08-10</time>
+        </a>
+    </div>
+
+
+                        
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>, <a class="tag-link" href="/tags/macOS/">macOS</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>平时我们开发完成IOS项目，需要打包给测试人员进行测试。其中的过程需要重复进行：修改配置项–编译—连接设备–运行打包–debug进设备中–然后交给等待的测试人员。现有成熟的持续集成Jenkins解决方案，并且该方案也提供了Xcode插件的支持，可以讲上述过程封装成一键解决方案。</p>
+<a id="more"></a>
+<h1 id="安装jenkins"><a href="#安装jenkins" class="headerlink" title="安装jenkins"></a>安装jenkins</h1><h2 id="java环境准备"><a href="#java环境准备" class="headerlink" title="java环境准备"></a>java环境准备</h2><p>jenkins主要依赖的java环境 所以确保电脑中java环境准确就绪支撑软件<br>检测是否已经部署了java环境<br>在终端输入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ java -version</span><br></pre></td></tr></table></figure>
+<p>如果出现类似于如下的字样 则标识您已经安装了java环境</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ java version &quot;1.8.0_77&quot;</span><br></pre></td></tr></table></figure>
+<p>若出现如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ -bash: java: command not found</span><br></pre></td></tr></table></figure>
+<p>则表示没有安装java环境 则需要下载java安装<br>下载地址 (1.8版本,后续下载版本下载地址可能会有变化)<br><a href="http://sdlc-esd.oracle.com/ESD6/JSCDL/jdk/8u101-b13/jre-8u101-macosx-x64.dmg?GroupName=JSC&amp;FilePath=/ESD6/JSCDL/jdk/8u101-b13/jre-8u101-macosx-x64.dmg&amp;BHost=javadl.sun.com&amp;File=jre-8u101-macosx-x64.dmg&amp;AuthParam=1469437384_c779c63859c8f9e7a246e00f1e58a803&amp;ext=.dmg" target="_blank" rel="noopener">java 1.8下载地址</a></p>
+<p>下载安装后重复上述步骤 确保java环境成功搭建</p>
+<h2 id="在mac上安装jenkins"><a href="#在mac上安装jenkins" class="headerlink" title="在mac上安装jenkins"></a>在mac上安装jenkins</h2><h3 id="安装HomeBrew"><a href="#安装HomeBrew" class="headerlink" title="安装HomeBrew"></a>安装HomeBrew</h3><p>jenkins依赖HomeBrew包管理,所以我们要先安装homebrew,<br>若已安装则跳转,查看方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew -v</span><br></pre></td></tr></table></figure>
+<p>若正确显示版本信息则代表安装成功<br>安装homebrew参考网站<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://brew.sh/index_zh-cn.html</span><br></pre></td></tr></table></figure></p>
+<p>安装完成之后<br>homebrew的源在国外,所以我们需要配置一下使之下载的快一点<br>参考网站 <a href="http://ban.ninja" target="_blank" rel="noopener">http://ban.ninja</a><br>在终端中输入  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>在文件最后一行 添加七牛cdn加速</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ export HOMEBREW_BOTTLE_DOMAIN=http://7xkcej.dl1.z0.glb.clouddn.com</span><br></pre></td></tr></table></figure>
+<p>注:以上工作都是前期准备,因为大部分包管理(包括brew和gem)的源都在国外,所以可能下载速度会很感人</p>
+<h3 id="开始安装jenkins"><a href="#开始安装jenkins" class="headerlink" title="开始安装jenkins"></a>开始安装jenkins</h3><p>在终端输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install jenkins</span><br></pre></td></tr></table></figure></p>
+<p>根据提示操作即可完成 大概需要不到5分钟(排除网络原因)<br>至此:jenkins环境搭建成功</p>
+<h1 id="安装fastlane和fir-CLI"><a href="#安装fastlane和fir-CLI" class="headerlink" title="安装fastlane和fir-CLI"></a>安装fastlane和fir-CLI</h1><h2 id="fastlane和fir-CLI工具介绍"><a href="#fastlane和fir-CLI工具介绍" class="headerlink" title="fastlane和fir-CLI工具介绍"></a>fastlane和fir-CLI工具介绍</h2><p>fastlane和fir-CLI是一组工具套件,旨在实现iOS应用发布的自动化,并且提供一个良好的持续集成和部署流程,只需要一个点击或者一个命令就可以触发这个流程<br>项目地址</p>
+<p><a href="https://github.com/fastlane/fastlane" target="_blank" rel="noopener">fastlane(github)</a></p>
+<p><a href="https://github.com/FIRHQ/fir-cli/" target="_blank" rel="noopener">fir-CLI(github)</a><br>shenzhen已经由一年以上没有更新了,很多功能都并不是很好用了,所以在这里我们才会安装fastlane这个工具,截止到2016年07月,fastlane工具还是可以上传到itc的</p>
+<h2 id="rubygems环境搭建"><a href="#rubygems环境搭建" class="headerlink" title="rubygems环境搭建"></a>rubygems环境搭建</h2><p>fastlane 和 shenzhen都是ruby编写的 所以要用到gem安装<br>查看当前的ruby版本</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ruby –v</span><br></pre></td></tr></table></figure>
+<p>代表ruby gem安装成功已经安装<br>若没有安装rubygems 可以利用我们刚刚搭建好的brew包管理来安装gem<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install ruby</span><br></pre></td></tr></table></figure></p>
+<p>注:gems其实是ruby的包管理,ruby自1.9.2以后已经安装gems<br>gem安装完成后我们还要修改ruby的下载源到国内<br>参考网站<a href="http://gems.ruby-china.org/" target="_blank" rel="noopener">ruby-china</a>(只需要了解到该网站下的<code>如何使用</code>就可以了)</p>
+<h2 id="安装fastlane"><a href="#安装fastlane" class="headerlink" title="安装fastlane"></a>安装fastlane</h2><p>安装fastlane和fir-cli的前提是确保已经安装了xcode-tool-chain工具链,如果本地没有安装这个工具链,需要下载并安装,最简单的办法就是下载xcode</p>
+<p>若已经安装了这个工具链(一般本地安装了xcode软件,会自动安装这个工具链的),键入如下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo gem install fastlane</span><br></pre></td></tr></table></figure></p>
+<p>可能需要输入密码,密码为现在mac登入账户下的登录密码</p>
+<p>如果出现如下错误<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">while executing gem ... (Errno::EPERM)</span><br></pre></td></tr></table></figure></p>
+<p>键入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ export GEM_HOME=~/.ruby;sudo nvram boot-args=&quot;rootless=0&quot;; sudo reboot</span><br></pre></td></tr></table></figure>
+<p>等待重启完成后继续安装fastlane</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo gem install –n /usr/local/bin fastlane  --no-ri --no-rdoc</span><br><span class="line"></span><br><span class="line">$ sudo gem install –n /usr/local/bin fir-cli  --no-ri --no-rdoc</span><br></pre></td></tr></table></figure>
+<h1 id="为项目初始化fastlane"><a href="#为项目初始化fastlane" class="headerlink" title="为项目初始化fastlane"></a>为项目初始化fastlane</h1><h2 id="检查初始化"><a href="#检查初始化" class="headerlink" title="检查初始化"></a>检查初始化</h2><p>查看项目code文件夹下,与xcodeproj同级目录下是否存在fastlane文件夹<br>如果存在,可以跳过这一步,直接进行jenkins设置和环境搭建<br>如果不存在,则要为项目初始化fastlane了</p>
+<h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>在终端中cd 到项目所在的文件夹下,注意:与xcodeproj文件同级)<br>执行下面的命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ fastlane init</span><br></pre></td></tr></table></figure>
+<p>按照提示完成输入</p>
+<ol>
+<li>初始化输入appleid(该appleid 必须是对应着该项目的,而且在本地xcode中已经登录并存在与钥匙串中,并确保证书已经下载)</li>
+</ol>
+<p>2.核对信息下载文件<br>fastlane初始化结束后,会在本地生成一个名为fastlane的文件夹<br>文件夹内包含三个文件和两个额外的文件夹</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Appfile</span><br><span class="line">Deliverfile</span><br><span class="line">Fastfile</span><br><span class="line">metadata</span><br><span class="line">		copyright.txt</span><br><span class="line">		primary_category.txt</span><br><span class="line">		primary_first_sub_category.txt</span><br><span class="line">		primary_second_sub_category.txt</span><br><span class="line">		secondary_category.txt</span><br><span class="line">		secondary_first_sub_category.txt</span><br><span class="line">		secondary_second_sub_category.txt</span><br><span class="line">		zh-Hans</span><br><span class="line">				description.txt</span><br><span class="line">				keywords.txt</span><br><span class="line">				marketing_url.txt</span><br><span class="line">				name.txt</span><br><span class="line">				privacy_url.txt</span><br><span class="line">				release_notes.txt</span><br><span class="line">				support_url.txt</span><br><span class="line">screenshots</span><br></pre></td></tr></table></figure>
+<p>这其中最重要的也是和上传相关最大关联的文件就是<strong>Fastfile</strong>和<strong>metadata</strong>文件夹中的<strong>zh-Hans</strong>文件夹中的内容<br>其中:<br><strong>description.txt</strong>:描述这个app的文本文档</p>
+<p><strong>keywords.txt</strong>:appstore ASO(搜索关键字)</p>
+<p><strong>marketing_url.txt</strong> :销售url</p>
+<p><strong>name.txt</strong>: 应用名称,一般不会修改</p>
+<p><strong>release_notes.txt</strong>: 应用更新内容, 一般在发布版本的时候都会修改</p>
+<p>到现在为止,所有的准备工作已经就绪,现在我们就要进入jenkins的后台去进行持续集成了.<br>注意:fastlane的init工作一般只进行一次,如果发现存在fastlane文件夹,就不要进行这个工作了,而且这个文件会随着svn或者git一起上传上去<br>我已经减少了不必要下载的文件和样例,只保留了两个文件 fastlane/metadata/zh-Hans/下的description.txt和release_notes.txt 因为在我看来,这个文件才是有可能经常会改动的,其他的如果想要修改,可以去 <a href="https://itunesconnect.apple.com" target="_blank" rel="noopener">https://itunesconnect.apple.com</a> 上登录去修改</p>
+<h1 id="jenkins的配置和自动打包脚本的编写"><a href="#jenkins的配置和自动打包脚本的编写" class="headerlink" title="jenkins的配置和自动打包脚本的编写"></a>jenkins的配置和自动打包脚本的编写</h1><h2 id="启动jenkins"><a href="#启动jenkins" class="headerlink" title="启动jenkins"></a>启动jenkins</h2><p>在终端输入<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jenkins –h</span><br></pre></td></tr></table></figure></p>
+<p>输出结果:</p>
+<p>如果看到最后一行  <strong>Jenkins is fully up and running</strong>  则代表jenkins启动成功</p>
+<p>在浏览器(safiri或chrome中输入地址 127.0.0.1:8080),默认jenkins的启动端口是8080</p>
+<p>如果是第一次进入到后台,会有一些基本的配置需要来完成.按照提示来就可以了<br>到最后一步,会让我们去安装插件,如果网络环境不好,可能会出现安装失败的情况,但是不会影响主要功能的使用</p>
+<h2 id="jenkins界面"><a href="#jenkins界面" class="headerlink" title="jenkins界面"></a>jenkins界面</h2><p>如果所有的配置都是在正确的,那么你会看到主界面</p>
+<p>顾名思义:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:left"></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"><strong>新建</strong></td>
+<td>可以新建一个持续集成的任务</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"><strong>用户</strong></td>
+<td>管理用户</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"><strong>任务历史</strong></td>
+<td>可以查看持续集成的历史</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"><strong>系统管理</strong></td>
+<td>类似于系统设置,一般我们使用的较多的功能则是插件管理.</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"></td>
+<td style="text-align:left"><strong>Credentials</strong></td>
+<td>管理所有的通行证,可以是git的也可以是svn</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>构建view界面</p>
+<p>构建视图view可以查看当前的构建的队列和构建任务的进行情况</p>
+<h2 id="搭建基于jenkins的iOS-mvs-beta项目"><a href="#搭建基于jenkins的iOS-mvs-beta项目" class="headerlink" title="搭建基于jenkins的iOS_mvs_beta项目"></a>搭建基于jenkins的iOS_mvs_beta项目</h2><h3 id="项目目的"><a href="#项目目的" class="headerlink" title="项目目的"></a>项目目的</h3><p>建立该项目的目的主要是为了一键能够将iOS应用<code>优服365</code>能够快速方便的提供给测试人员测试,并且能够将项目一键打包成三个版本(dev,qa,prod)和分发给测试人员测试</p>
+<h3 id="新建任务"><a href="#新建任务" class="headerlink" title="新建任务"></a>新建任务</h3><p>回到主面板,点击新建</p>
+<h3 id="输入信息"><a href="#输入信息" class="headerlink" title="输入信息"></a>输入信息</h3><p>名称我们定为iOS_mvs_beta<br>紧接着选择  构建一个只有风格的软件项目  最后点击ok</p>
+<h3 id="源码管理"><a href="#源码管理" class="headerlink" title="源码管理"></a>源码管理</h3><p>随后进入一个新的页面 找到源码管理</p>
+<p>如果发现源码管理中没有找到你想要的  可能是没有安装对应的插件,安装插件的过程如下<br>主界面系统管理管理插件可选插件找到 <code>GIT plugin</code>或者<code>Subversion Plug-in</code>勾选后点击最下面的按钮直接安装安装完后重启即可</p>
+<p>可能会由于网络的原因,安装失败或根本不能访问到jenkins-ci.org<br>提供一个subversion.hdi的国内私有下载地址,如果失效,请另行想办法下载<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ http://7xrlqi.com1.z0.glb.clouddn.com/subversion.hpi</span><br></pre></td></tr></table></figure></p>
+<p>下载完成后,上传到jenkins安转即可<br>主界面系统管理管理插件高级上传插件选择文件后上传完成后重启</p>
+<p>插件安装完成后,进入到项目配置页面,找到源码管理<br>这个项目我们使用的是svn 输入svn的地址和用户名密码</p>
+<h3 id="添加构建命令"><a href="#添加构建命令" class="headerlink" title="添加构建命令"></a>添加构建命令</h3><p>找到 <code>构建</code> 这一栏点击<code>增加构建步骤</code> 点击 <code>Execute shell</code></p>
+<p>输入如下命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">#1.usr/bin/env bash</span><br><span class="line">source ~/.bash_profile</span><br><span class="line"></span><br><span class="line">#发布qa环境</span><br><span class="line">en=&quot;qa&quot;</span><br><span class="line">#打包文件存放的目录</span><br><span class="line">di=&quot;$&#123;HOME&#125;/jenkins/app/$&#123;JOB_NAME&#125;/$&#123;en&#125;/&quot;</span><br><span class="line">#打包的文件的名称</span><br><span class="line">name=&quot;mvs_$&#123;en&#125;-$&#123;BUILD_NUMBER&#125;-`date \&quot;+%m月%d日%H时%M分\&quot;`.ipa&quot;</span><br><span class="line">#ci环境变量路径</span><br><span class="line">cienvpath=&quot;$&#123;WORKSPACE&#125;/MVS/ci.env&quot;</span><br><span class="line">#修改ci.env的值</span><br><span class="line">echo &quot;&#123;\&quot;env\&quot;:\&quot;$&#123;en&#125;\&quot;&#125;&quot;&gt;$cienvpath</span><br><span class="line">#修改应用名称</span><br><span class="line">sed -i &apos;&apos; -e &quot;s/优服365/优服365_$&#123;en&#125;/g&quot; $&#123;WORKSPACE&#125;/MVS/Info.plist</span><br><span class="line">mkdir -p $di</span><br><span class="line">#打包</span><br><span class="line"></span><br><span class="line">#编译环境</span><br><span class="line">scheme=&quot;MVS&quot;</span><br><span class="line">configuration=&quot;Debug&quot;</span><br><span class="line">export_method=&apos;ad-hoc&apos;</span><br><span class="line">#指定项目地址</span><br><span class="line">in_path=&quot;$&#123;WORKSPACE&#125;/MVS.xcodeproj&quot;</span><br><span class="line">#指定输出归档文件地址</span><br><span class="line">archive_path=&quot;$di/archive/mvs_$&#123;en&#125;-$&#123;BUILD_NUMBER&#125;-`date \&quot;+%m月%d日%H时%M分\&quot;`.xcarchive&quot;</span><br><span class="line">#先清空前一次build在发布</span><br><span class="line">gym --project $&#123;in_path&#125; --scheme $&#123;scheme&#125; --clean --configuration $&#123;configuration&#125; --archive_path $&#123;archive_path&#125; --export_method $&#123;export_method&#125; --output_directory $&#123;di&#125; --output_name $&#123;name&#125;</span><br><span class="line"></span><br><span class="line">#ipa build -c Release -d $di --ipa $name</span><br><span class="line">#发布到蒲公英</span><br><span class="line">curlfileurl=&quot;@$&#123;di&#125;$&#123;name&#125;&quot;</span><br><span class="line">curl -F &quot;file=$&#123;curlfileurl&#125;&quot; -F &quot;uKey=5bffb7613006a47ea75bbc1b05720c16&quot; -F &quot;_api_key=8b461209f404caa7121e1374627f004b&quot; http://www.pgyer.com/apiv1/app/upload</span><br><span class="line"></span><br><span class="line">#还原名称</span><br><span class="line">sed -i &apos;&apos; -e &quot;s/优服365_$&#123;en&#125;/优服365/g&quot; $&#123;WORKSPACE&#125;/MVS/Info.plist</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#发布production环境 ali环境(测试用) 不是发布到App Store</span><br><span class="line">en=&quot;prod&quot;</span><br><span class="line">di=&quot;$&#123;HOME&#125;/jenkins/app/$&#123;JOB_NAME&#125;/$&#123;en&#125;/&quot;</span><br><span class="line">name=&quot;mvs_$&#123;en&#125;-$&#123;BUILD_NUMBER&#125;-`date \&quot;+%m月%d日%H时%M分\&quot;`.ipa&quot;</span><br><span class="line">echo &quot;&#123;\&quot;env\&quot;:\&quot;$&#123;en&#125;\&quot;&#125;&quot;&gt;$cienvpath</span><br><span class="line">sed -i &apos;&apos; -e &quot;s/优服365/优服365_$&#123;en&#125;/g&quot; $&#123;WORKSPACE&#125;/MVS/Info.plist</span><br><span class="line">mkdir -p $di</span><br><span class="line">#打包</span><br><span class="line">#编译环境</span><br><span class="line">scheme=&quot;MVS&quot;</span><br><span class="line">configuration=&quot;Debug&quot;</span><br><span class="line">export_method=&apos;ad-hoc&apos;</span><br><span class="line">#指定项目地址</span><br><span class="line">in_path=&quot;$&#123;WORKSPACE&#125;/MVS.xcodeproj&quot;</span><br><span class="line">#指定输出归档文件地址</span><br><span class="line">archive_path=&quot;$di/archive/mvs_$&#123;en&#125;-$&#123;BUILD_NUMBER&#125;-`date \&quot;+%m月%d日%H时%M分\&quot;`.xcarchive&quot;</span><br><span class="line">#先清空前一次build在发布</span><br><span class="line">gym --project $&#123;in_path&#125; --scheme $&#123;scheme&#125; --clean --configuration $&#123;configuration&#125; --archive_path $&#123;archive_path&#125; --export_method $&#123;export_method&#125; --output_directory $&#123;di&#125; --output_name $&#123;name&#125;</span><br><span class="line"></span><br><span class="line">#发布到testin</span><br><span class="line">curlfileurl=&quot;@$&#123;di&#125;$&#123;name&#125;&quot;</span><br><span class="line">#上传到testin</span><br><span class="line">curl -F &quot;file=$&#123;curlfileurl&#125;&quot; -F &quot;user_key=d2a20900910cf09b4dd7bf039d72a7eb&quot; -F &quot;update_notify=1&quot; http://api.pre.im/api/v1/app/upload</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#还原名称</span><br><span class="line">sed -i &apos;&apos; -e &quot;s/优服365_$&#123;en&#125;/优服365/g&quot; $&#123;WORKSPACE&#125;/MVS/Info.plist</span><br><span class="line"></span><br><span class="line">#发布dev环境</span><br><span class="line">en=&quot;dev&quot;</span><br><span class="line">di=&quot;$&#123;HOME&#125;/jenkins/app/$&#123;JOB_NAME&#125;/$&#123;en&#125;/&quot;</span><br><span class="line">name=&quot;mvs_$&#123;en&#125;-$&#123;BUILD_NUMBER&#125;-`date \&quot;+%m月%d日%H时%M分\&quot;`.ipa&quot;</span><br><span class="line">echo &quot;&#123;\&quot;env\&quot;:\&quot;$&#123;en&#125;\&quot;&#125;&quot;&gt;$cienvpath</span><br><span class="line">sed -i &apos;&apos; -e &quot;s/优服365/优服365_$&#123;en&#125;/g&quot; $&#123;WORKSPACE&#125;/MVS/Info.plist</span><br><span class="line">mkdir -p $di</span><br><span class="line">#发布到fir.im 需要安装gem插件 fir-cli #gem install fir-cli</span><br><span class="line">fir upgrade</span><br><span class="line">fir build_ipa $&#123;WORKSPACE&#125; -o $di$name -p -T 99a2677b35d3e1b1037791a8e6c3034a</span><br></pre></td></tr></table></figure></p>
+<p>点击保存</p>
+<h3 id="开始第一次构建"><a href="#开始第一次构建" class="headerlink" title="开始第一次构建"></a>开始第一次构建</h3><p>现在我们回到主面板,发现已经多了一个名为  <code>iOS_mvs_qa</code> 的项目,点击进入后 点击立即构建开始第一次构建</p>
+<h1 id="配置一键上传iTunesConnect"><a href="#配置一键上传iTunesConnect" class="headerlink" title="配置一键上传iTunesConnect"></a>配置一键上传iTunesConnect</h1><h2 id="项目目的-1"><a href="#项目目的-1" class="headerlink" title="项目目的"></a>项目目的</h2><p>建立该项目的目的主要是为了一键能够将iOS应用<code>优服365</code>能够快速方便的上传到苹果iTunesConnect的服务器,节省开发人员和上传人员的时间</p>
+<h2 id="建立任务"><a href="#建立任务" class="headerlink" title="建立任务"></a>建立任务</h2><p>如4.3.1所示,新建一个名为iOS_mvs_appstore的任务<br>svn地址和描述都和上一个一样</p>
+<h2 id="编写脚本"><a href="#编写脚本" class="headerlink" title="编写脚本"></a>编写脚本</h2><p>如4.3.4所示:脚本更改内容如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#1.usr/bin/env bash</span><br><span class="line"> cd $&#123;WORKSPACE&#125;</span><br><span class="line">chmod +x upload2Appstore.sh</span><br><span class="line">./ upload2Appstore.sh</span><br></pre></td></tr></table></figure></p>
+<p>upload2Appstore.sh 这个文件是随着svn一起down下来的<br>附: upload2Appstore.sh 源码<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#1.usr/bin/env bash</span><br><span class="line"></span><br><span class="line">cienvpath=&quot;MVS/ci.env&quot;</span><br><span class="line">#修改ci.env的值</span><br><span class="line">echo &quot;&#123;\&quot;env\&quot;:\&quot;production\&quot;&#125;&quot;&gt;$cienvpath</span><br><span class="line"></span><br><span class="line">rm -f MVS.ipa</span><br><span class="line">rm -f MVS.app.dSYM.zip</span><br><span class="line"></span><br><span class="line">fastlane ios appstore</span><br></pre></td></tr></table></figure></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/08/11/放过宁泽涛吧-奥运太难了/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    放过宁泽涛吧,奥运太难了
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/08/10/解决gem安装Operation-not-permitted错误/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">解决gem安装Operation not permitted错误</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

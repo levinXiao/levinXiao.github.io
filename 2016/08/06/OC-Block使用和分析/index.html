@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>OC-Block使用和分析 | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="#block使用 ##第一部分 ###定义和使用Block， 1234567891011121314151617void (^printBlock)() = ^()&amp;#123;    printf(&amp;quot;no number&amp;quot;);&amp;#125;;printBlock();printBlock(9);int mutiplier = 7;//（3）定义名为myBlock的代码块，返回值类型">
+<meta name="keywords" content="oc,block">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OC-Block使用和分析">
+<meta property="og:url" content="http://xiaoyu666.com/2016/08/06/OC-Block使用和分析/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="#block使用 ##第一部分 ###定义和使用Block， 1234567891011121314151617void (^printBlock)() = ^()&amp;#123;    printf(&amp;quot;no number&amp;quot;);&amp;#125;;printBlock();printBlock(9);int mutiplier = 7;//（3）定义名为myBlock的代码块，返回值类型">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.607Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OC-Block使用和分析">
+<meta name="twitter:description" content="#block使用 ##第一部分 ###定义和使用Block， 1234567891011121314151617void (^printBlock)() = ^()&amp;#123;    printf(&amp;quot;no number&amp;quot;);&amp;#125;;printBlock();printBlock(9);int mutiplier = 7;//（3）定义名为myBlock的代码块，返回值类型">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-OC-Block使用和分析" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            OC-Block使用和分析
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/08/06/OC-Block使用和分析/">
+            <time datetime="2016-08-06T13:14:52.000Z" itemprop="datePublished">2016-08-06</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/block/">block</a>, <a class="tag-link" href="/tags/oc/">oc</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>#block使用</p>
+<p>##第一部分</p>
+<p>###定义和使用Block，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void (^printBlock)() = ^()&#123;</span><br><span class="line">    printf(&quot;no number&quot;);</span><br><span class="line">&#125;;</span><br><span class="line">printBlock();</span><br><span class="line"></span><br><span class="line">printBlock(9);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int mutiplier = 7;</span><br><span class="line">//（3）定义名为myBlock的代码块，返回值类型为int</span><br><span class="line">int (^myBlock)(int) = ^(int num)&#123;</span><br><span class="line">  	return num*mutiplier;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//使用定义的myBlock</span><br><span class="line">int newMutiplier = myBlock(3);</span><br><span class="line">printf(&quot;newMutiplier is %d&quot;,myBlock(3));</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>###定义在-viewDidLoad方法外部</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//（2）定义一个有参数，没有返回值的Block</span><br><span class="line">void (^printNumBlock)(int) = ^(int num)&#123;</span><br><span class="line">    printf(&quot;int number is %d&quot;,num);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>定义Block变量，就相当于定义了一个函数。但是区别也很明显，因为函数肯定是在-viewDidLoad方法外面定义，而Block变量定义在了viewDidLoad方法内部。当然，我们也可以把Block定义在-viewDidLoad方法外部，例如上面的代码块printNumBlock的定义，就在-viewDidLoad外面。</p>
+<p>再来看看上面代码运行的顺序问题，以第（3）个myBlock距离来说，在定义的地方，并不会执行Block{}内部的代码，而在myBlock(3)调用之后才会执行其中的代码，这跟函数的理解其实差不多，就是只要在调用Block（函数）的时候才会执行Block体内（函数体内）的代码。所以上面的简单代码示例，我可以作出如下的结论，</p>
+<p>######（1）在类中，定义一个Block变量，就像定义一个函数；</p>
+<p>######（2）Block可以定义在方法内部，也可以定义在方法外部；</p>
+<p>######（3）只有调用Block时候，才会执行其{}体内的代码；</p>
+<p>######（PS：关于第（2）条，定义在方法外部的Block，其实就是文件级别的全局变量）</p>
+<p>那么在类中定义一个Block，特别是在-viewDidLoad方法体内定义一个Block到底有什么意义呢？我表示这时候只把它当做私有函数就可以了。我之前说过，Block其实就相当于代理，那么这时候我该怎样将其与代理类比以了解呢。这时候我可以这样说：本类中的Block就相当于类自己服从某个协议，然后让自己代理自己去做某个事情。</p>
+<p>##第二部分</p>
+<p>###__block关键字的使用</p>
+<p>在Block的{}体内，是不可以对外面的变量进行更改的，比如下面的语句，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int x = 100;</span><br><span class="line">void (^sumXAndYBlock)(int) = ^(int y)&#123;</span><br><span class="line">x = x+y;</span><br><span class="line">printf(&quot;new x value is %d&quot;,x);</span><br><span class="line">&#125;;</span><br><span class="line">sumXAndYBlock(50);</span><br></pre></td></tr></table></figure>
+<p>这段代码有什么问题呢，Xcode会提示x变量错误信息：Variable is not assigning (missing <strong>block type)，这时候给int x = 100;语句前面加上</strong>block关键字即可，如下，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__block int x = 100;</span><br></pre></td></tr></table></figure>
+<p>这样在Block的{}体内，就可以修改外部变量了。</p>
+<p>##第三部分：Block作为property属性实现页面之间传值</p>
+<p>第二个页面总的代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@interface NextViewController : UIViewController</span><br><span class="line">@property (nonatomic, copy) void (^NextViewControllerBlock)(NSString *tfText);</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line">//NextViewContorller.m 文件</span><br><span class="line">- (IBAction)popBtnClicked:(id)sender &#123;</span><br><span class="line">    if (self.NextViewControllerBlock) &#123;</span><br><span class="line">        self.NextViewControllerBlock(self.inputTF.text);</span><br><span class="line">    &#125;</span><br><span class="line">    [self.navigationController popViewControllerAnimated:YES];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一个页面总的代码如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">- (IBAction)btnClicked:(id)sender &#123;</span><br><span class="line">    NextViewController *nextVC = [[NextViewController alloc] initWithNibName:@&quot;NextViewController&quot; bundle:nil];</span><br><span class="line">    nextVC.NextViewControllerBlock = ^(NSString *tfText)&#123;</span><br><span class="line">        [self resetLabel:tfText];</span><br><span class="line">    &#125;;</span><br><span class="line">    [self.navigationController pushViewController:nextVC animated:YES];</span><br><span class="line">&#125;</span><br><span class="line">#pragma mark - NextViewControllerBlock method</span><br><span class="line">- (void)resetLabel:(NSString *)textStr</span><br><span class="line">&#123;</span><br><span class="line">    self.nextVCInfoLabel.text = textStr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>#block使用分析 就像delegate的简化版<br>代理设计模式对于iOS开发的人来说肯定很熟悉了，代理delegate就是委托另一个对象来帮忙完成一件事情，为什么要委托别人来做呢，这其实是MVC设计模式中的模块分工问题，例如View对象它只负责显示界面，而不需要进行数据的管理，数据的管理和逻辑是Controller的责任，所以此时View就应该将这个功能委托给Controller去实现，当然你作为码农强行让View处理数据逻辑的任务，也不是不行，只是这就违背了MVC设计模式，项目小还好，随着功能的扩展，我们就会发现越写越难写；还有一种情况，就是这件事情做不到，只能委托给其他对象来做了，下面的例子中我会说明这种情况。</p>
+<p>##实际情景使用</p>
+<p>下面的代码我想实现一个简单的功能，场景描述如下：TableView上面有多个CustomTableViewCell，cell上面显示的是文字信息和一个详情Button，点击button以后push到一个新的页面。为什么说这个场景用到了代理delegate？因为button是在自定义的CustomTableViewCell上面，而cell没有能力实现push的功能，因为push到新页面的代码是这样的，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[self.navigationController pushViewController];</span><br></pre></td></tr></table></figure>
+<p>所以这时候CustomTableViewCell就要委托它所在的Controller去做这件事情了。</p>
+<p>###为了方便比较  先使用delegate的方式实现<br>按照我的编码习惯，我喜欢把委托的协议写在提出委托申请的类的头文件里面，现在的场景中是CustomTableViewCell提出了委托申请，下面是简单的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@protocol CustomCellDelegate &lt;NSObject&gt;</span><br><span class="line"></span><br><span class="line">- (void)pushToNewPage;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface CustomTableViewCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) id&lt;CustomCellDelegate&gt; delegate;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UILabel *text1Label;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UIButton *detailBtn;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>上面的代码在CustomTableViewCell.h中定义了一个协议CustomCellDelegate，它有一个需要实现的pushToNewPage方法，然后还要写一个属性修饰符为assign、名为delegate的property，之所以使用assign是因为这涉及到内存管理的东西，以后的博客中我会专门说明原因。</p>
+<p>接下来在CustomTableViewCell.m中编写Button点击代码，</p>
+<p>[self.detailBtn addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];</p>
+<p>对应的btnClicked方法如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (void)btnClicked:(UIButton *)btn &#123;</span><br><span class="line">    if (self.delegate &amp;&amp; [self.delegaterespondsToSelector:@selector(pushToNewPage)]) &#123;</span><br><span class="line">        [self.delegate pushToNewPage];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面代码中的判断条件最好是写上，因为这是判断self.delegate是否为空，以及实现CustomCellDelegate协议的Controller是否也实现了其中的pushToNewPage方法。</p>
+<p>接下来就是受到委托申请的类，这里是对应CustomTableViewCell所在的ViewController，它首先要实现CustomCellDelegate协议，然后要实现其中的pushToNewPage方法，还有一点不能忘记的就是要设置CustomTableViewCell对象cell的delegate等于self，很多情况下可能忘了写cell.delegate = self;导致遇到问题不知云里雾里。下面的关键代码都是在ViewController.m中，</p>
+<p>首先是服从CumtomCellDelegate协议，这个大家肯定都知道，就像很多系统的协议，例如UIAlertViewDelegate、UITextFieldDelegate、UITableViewDelegate、UITableViewDatasource一样。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">@interface ViewController ()&lt;CustomCellDelegate&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) NSArray *textArray;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">//然后是实现CustomCellDelegate协议中的pushToNewPage方法，</span><br><span class="line"></span><br><span class="line">- (void)pushToNewPage &#123;</span><br><span class="line">    DetailViewController*detailVC = [[DetailViewController alloc] init];</span><br><span class="line">    [self.navigationController pushViewController:detailVC animated:YES];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//还有一个步骤最容易被忘记，就是设置CumtomTableViewCell对象cell的delegate，如下代码，</span><br><span class="line"></span><br><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    static NSString *simpleIdentify = @&quot;CustomCellIdentify&quot;;</span><br><span class="line">    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleIdentify];</span><br><span class="line">    if (cell == nil) &#123;</span><br><span class="line">        cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleIdentify];</span><br><span class="line">    &#125;</span><br><span class="line">    //下面代码很关键</span><br><span class="line">    cell.delegate = self;</span><br><span class="line"></span><br><span class="line">    cell.text1Label.text = [self.textArray objectAtIndex:indexPath.row];</span><br><span class="line"></span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过cell.delegate = self;确保了CustomTableViewCell.m的判断语句if(self.delegate &amp;&amp; …){}中得self.delegate不为空，此时的self.delegate其实就是ViewController，cell对象委托了ViewController实现pushToNewPage方法。这个简单的场景描述了使用代理的一种情况，就是CustomTableViewCell没有能力实现pushViewController的功能，所以委托ViewController来实现。</p>
+<p>###下面使用block的方式实现</p>
+<p>Block是一个C语言的特性，它就是C语言的函数指针，在使用中最多的就是进行函数回调或者事件传递，比如发送数据到服务器，等待服务器反馈是成功还是失败，此时block就派上用场了，这个功能的实现也可用使用代理，这么说的话，感觉block是不是有点像代理了呢？</p>
+<p>我之前接触block，都是使用它作为函数参数，当时感觉不是很理解。现在在项目中，很多时候block作为property，这样更加简单直接，想想，其实property不就是定义的合成存储的变量嘛，而block作为函数参数也是定义的变量，所以作为函数参数或者作为property本质没有区别。</p>
+<p>看一看别人总结的block的语法吧，<a href="http://fuckingblocksyntax.com，这个链接亮了，fucking" target="_blank" rel="noopener">http://fuckingblocksyntax.com，这个链接亮了，fucking</a> block syntax，操蛋的block语法啊。block有如下几种使用情况，</p>
+<p>1、作为一个本地变量（local variable）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">returnType (^blockName)(parameterTypes) = ^returnType(parameters) &#123;</span><br><span class="line">	//blablabla</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>2、作为@property</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, copy) returnType (^blockName)(parameterTypes);</span><br></pre></td></tr></table></figure>
+<p>3、作为方法的参数（method parameter）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (void)someMethodThatTakesABlock:(returnType (^)(parameterTypes))blockName;</span><br></pre></td></tr></table></figure>
+<p>4、作为方法参数的时候被调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[someObject someMethodThatTakesABlock: ^returnType (parameters) &#123;...&#125;];</span><br></pre></td></tr></table></figure>
+<p>5、使用typedef来定义block，可以事半功倍</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">typedef returnType (^TypeName)(parameterTypes);</span><br><span class="line">TypeName blockName = ^returnType(parameters) &#123;...&#125;;</span><br></pre></td></tr></table></figure>
+<p>上面我也只是复制粘贴了一下，接下来还是实现点击CustomTableViewCell上面的Button实现页面跳转的功能，我之前不止一次的类比block就像delegate，这边我也是思维惯性，下面的内容我就当block为代理，一些用词描述还是跟delegate差不多。首先，在提出委托申请的CustomTableViewCell中定义block的property，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@interface CustomTableViewCell : UITableViewCell</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UILabel *text1Label;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) UIButton *detailBtn;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/*delegate的定义 我没有删除，因为大家可以类比了看下*/</span><br><span class="line"></span><br><span class="line">@property (nonatomic, assign) id&lt;CustomCellDelegate&gt; delegate;</span><br><span class="line"></span><br><span class="line">/*这里定义了ButtonBlock*/</span><br><span class="line"></span><br><span class="line">@property (nonatomic, copy) void (^ButtonBlock)();</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>这里用copy属性来修饰ButtonBlock property，这个原因，我会在以后的博客中作专门的解释。</p>
+<p>接下来在CustomTableViewCell中给它上面的detailBtn绑定点击方法，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[self.detailBtn addTarget:self action:@selector(btnClicked:) forControlEvents:UIControlEventTouchUpInside];</span><br><span class="line"></span><br><span class="line">- (void)btnClicked:(UIButton *)btn &#123;</span><br><span class="line">    //这是之前的delegate</span><br><span class="line">    if (self.delegate &amp;&amp; [self.delegate respondsToSelector:@selector(pushToNewPage)]) &#123;</span><br><span class="line">        [self.delegate pushToNewPage];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //这是现在我们要说的block    </span><br><span class="line">    if (ButtonBlock) &#123;</span><br><span class="line">        ButtonBlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面是一个关键性的地方，在ViewController2中设置其CustomTableViewCell的cell对象的ButtonBlock，也就是给它赋值，此处我还是保留了cell.delegate = self;  ##代码##</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath &#123;</span><br><span class="line">    NSString *blockIdentify = @&quot;BlockIdentify&quot;;</span><br><span class="line">    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:blockIdentify];</span><br><span class="line">    if (cell == nil) &#123;</span><br><span class="line">        cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:blockIdentify];</span><br><span class="line">    &#125;</span><br><span class="line">    cell.text1Label.text = [self.textArray objectAtIndex:indexPath.row];</span><br><span class="line">    //delegate的不可缺少的代码，这里放在这儿只是为了给各位类比一下</span><br><span class="line">    cell.delegate = self;</span><br><span class="line"></span><br><span class="line">    //ButtonBlock不可缺少的代码</span><br><span class="line">    cell.ButtonBlock = ^&#123;</span><br><span class="line">        [self pushToNewPage2];</span><br><span class="line">    &#125;;</span><br><span class="line">    return cell;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之所以cell.ButtonBlock = ^{};赋值，是因为我们我们是这样定义ButtonBlock的，void (^ButtonBLock)()，表示无返回值无参数。</p>
+<p>你们看这个方法是不是与CustomCellDelegate协议中的pushToNewPage方法类似。然后在回过头来类比一样，是不是block就是精简版的delegate，因为delegate设计模式要写协议CustomCellDelegate，还有容易遗漏cell.delegate = self;但是block使用的时候就简单多了。</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/08/06/UIScrollerView-XYRefresh/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    UIScrollerView-XYRefresh
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/08/06/Docker容器配置gogs/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">Docker容器配置gogs</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

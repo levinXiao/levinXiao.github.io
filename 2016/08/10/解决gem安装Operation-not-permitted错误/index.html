@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>解决gem安装Operation not permitted错误 | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="简单来说,这个问题应该出现在10.11 El Captain上的几率比较大原因呢 就是因为apple在El Captain引入了rootless机制 rootless一句话总结即使是root用户，将无法对以下路径有写和执行权限：  /System /bin /sbin /usr (except /usr/local)">
+<meta name="keywords" content="macOS,gem">
+<meta property="og:type" content="article">
+<meta property="og:title" content="解决gem安装Operation not permitted错误">
+<meta property="og:url" content="http://xiaoyu666.com/2016/08/10/解决gem安装Operation-not-permitted错误/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="简单来说,这个问题应该出现在10.11 El Captain上的几率比较大原因呢 就是因为apple在El Captain引入了rootless机制 rootless一句话总结即使是root用户，将无法对以下路径有写和执行权限：  /System /bin /sbin /usr (except /usr/local)">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="解决gem安装Operation not permitted错误">
+<meta name="twitter:description" content="简单来说,这个问题应该出现在10.11 El Captain上的几率比较大原因呢 就是因为apple在El Captain引入了rootless机制 rootless一句话总结即使是root用户，将无法对以下路径有写和执行权限：  /System /bin /sbin /usr (except /usr/local)">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-解决gem安装Operation-not-permitted错误" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            解决gem安装Operation not permitted错误
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/08/10/解决gem安装Operation-not-permitted错误/">
+            <time datetime="2016-08-10T06:23:11.000Z" itemprop="datePublished">2016-08-10</time>
+        </a>
+    </div>
+
+
+                        
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/gem/">gem</a>, <a class="tag-link" href="/tags/macOS/">macOS</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>简单来说,这个问题应该出现在10.11 El Captain上的几率比较大<br>原因呢 就是因为apple在El Captain引入了<strong>rootless</strong>机制</p>
+<h1 id="rootless"><a href="#rootless" class="headerlink" title="rootless"></a>rootless</h1><h6 id="一句话总结"><a href="#一句话总结" class="headerlink" title="一句话总结"></a>一句话总结</h6><p>即使是root用户，将无法对以下路径有写和执行权限：</p>
+<ul>
+<li>/System</li>
+<li>/bin</li>
+<li>/sbin</li>
+<li>/usr (except /usr/local)</li>
+</ul>
+<a id="more"></a>
+<p>只有Apple自身签名的软件（含命令行工具）可以。</p>
+<h6 id="详细说明："><a href="#详细说明：" class="headerlink" title="详细说明："></a>详细说明：</h6><p>先简单介绍一下OS X的权限系统吧</p>
+<p>OS X 的内核XNU,一个由Mach，BSD，IOKit混合的内核，所以它的权限管理系统类似UNIX的BSD</p>
+<ol>
+<li><p>一个用户(user)对于一个文件有三种状态，可读(r)、可写(w)、可执行(x)，一个文件会有一个所属用户，所属用户组。还会有文件属主权限、同组用户权限、其他用户权限这三种标识符用来定义一个文件对一个用户的权限集合。</p>
+</li>
+<li><p>为了达到多个用户的权限管理，每个用户会在一个或者多个用户组(group)中，一个用户组可以有多个用户</p>
+</li>
+<li><p>root用户是一个特殊用户（超级用户），拥有对所有文件的rwx权限（可读可写可执行）</p>
+</li>
+<li><p>UNIX系统是纯粹基于文件的，换言之你的网络读取，驱动程序，分区表什么的其实都会以文件的形式存在</p>
+</li>
+</ol>
+<h6 id="再复杂点"><a href="#再复杂点" class="headerlink" title="再复杂点"></a>再复杂点</h6><p>OS X 内置会有staff wheel admin这三种常见的用户组，分别介绍一下</p>
+<ol>
+<li><p>staff : 所有创建用户都会属于这个用户组，提供最基本的对该用户目录 ~/<em>/User/(</em>))的rwx权限，其他的一般只有r或者rx权限。比如我建立一个用户叫做lizhuoli，那么我会在一个staff组里面，对/User/someone/* 有rwx权限。</p>
+</li>
+<li><p>admin :默认创建的所有用户也会属于这个admin用户组，在它里面的用户可以通过<br>su<br>或者<br>sudo<br>切换到root用户，只要执行以后输入这个用户的密码即可，而不需要知道root密码。</p>
+</li>
+<li><p>wheel :唯一只拥有一个用户root，意思是root用户的专属用户组。</p>
+</li>
+</ol>
+<p>OS X 10.11 加入了Rootless，默认创建的用户还是属于admin用户组，也能切换到root用户，但是加以了限制，结果是一旦你执行su 或者 sudo切换到root用户</p>
+<p><strong>你的这个root用户不再是真正的root用户(对所有文件有rwx)</strong></p>
+<p><strong>你的这个root用户不再是真正的root用户(对所有文件有rwx)</strong></p>
+<p><strong>你的这个root用户不再是真正的root用户(对所有文件有rwx)</strong></p>
+<p>重要的话说三遍！</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bash-3.2# whoami</span><br><span class="line">root</span><br><span class="line">touch /usr/test</span><br><span class="line">touch: test: Operation not permitted</span><br></pre></td></tr></table></figure>
+<p>现在你虽然用 whoami 看到自己明明是root用户了，但是不能有对/System /usr等文件夹的写入权限，甚至将一些原来的所属用户组为admin的文件夹的权限全部改为了wheel（比如对/usr/local，在10.11之前都是属于当前用户:admin用户组的，启用Rootless会变成root:wheel）。</p>
+<p>这样防止了黑客入侵，病毒修改，一些恶意软件的篡改文件权限的行为。（不过话说Homebrew — The missing package manager for OS X应该也要更新了，因为Rootless下面Homebrew的安装路径/usr/local都是root:wheel的）</p>
+<p>当然，你也可以禁用Rootless，不过这就多了一份被恶意软件攻击的潜在威胁。建议此时打开Mac App Store 和被认可的开发者或者纯粹的Mac App Store限制。</p>
+<h1 id="说正事"><a href="#说正事" class="headerlink" title="说正事"></a>说正事</h1><p>如果发生了上面的错误</p>
+<p>告诉你就是因为rootless的原因</p>
+<p>怎么解决</p>
+<p>既然没有权限我换一个地方存着这个就好了</p>
+<p>例如我要装openssl</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#macOS下</span><br><span class="line">$ sudo gem install –n /usr/local/bin openssl  --no-ri --no-rdoc</span><br></pre></td></tr></table></figure>
+<p>正事说完了</p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/08/10/通过jenkins搭建基本iOS-app的持续交付平台/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    通过jenkins搭建基本iOS-app的持续交付平台
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/08/10/中澳关系-毁于记者/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">中澳关系,毁于记者</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

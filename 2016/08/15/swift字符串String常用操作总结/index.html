@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>swift字符串String常用操作总结 | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="swift中字符串的操作  字符串的定义1234var str1=&amp;quot;hello, mandarava.&amp;quot; //字符串变量let str2=&amp;quot;hello, mandarava.&amp;quot; //字符串常量let str3=&amp;quot;&amp;quot; //空字符串let str4=String() //空字符串">
+<meta name="keywords" content="swift">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swift字符串String常用操作总结">
+<meta property="og:url" content="http://xiaoyu666.com/2016/08/15/swift字符串String常用操作总结/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="swift中字符串的操作  字符串的定义1234var str1=&amp;quot;hello, mandarava.&amp;quot; //字符串变量let str2=&amp;quot;hello, mandarava.&amp;quot; //字符串常量let str3=&amp;quot;&amp;quot; //空字符串let str4=String() //空字符串">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.611Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="swift字符串String常用操作总结">
+<meta name="twitter:description" content="swift中字符串的操作  字符串的定义1234var str1=&amp;quot;hello, mandarava.&amp;quot; //字符串变量let str2=&amp;quot;hello, mandarava.&amp;quot; //字符串常量let str3=&amp;quot;&amp;quot; //空字符串let str4=String() //空字符串">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-swift字符串String常用操作总结" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            swift字符串String常用操作总结
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/08/15/swift字符串String常用操作总结/">
+            <time datetime="2016-08-15T08:16:00.000Z" itemprop="datePublished">2016-08-15</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/swift/">swift</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/swift/">swift</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>swift中字符串的操作</p>
+<ul>
+<li>字符串的定义<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var str1=&quot;hello, mandarava.&quot; //字符串变量</span><br><span class="line">let str2=&quot;hello, mandarava.&quot; //字符串常量</span><br><span class="line">let str3=&quot;&quot; //空字符串</span><br><span class="line">let str4=String() //空字符串</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li><p>字符的定义</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var char1:Character=&quot;m&quot; //字符变量</span><br><span class="line">let char2:Character=&quot;m&quot; //字符常量</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串的连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">let str1=&quot;hello, &quot;</span><br><span class="line">let str2=&quot;mandarava.&quot;</span><br><span class="line">let str3=str1+str2 //=连接str1、str2</span><br><span class="line">//str3=&quot;hello, mandarava.&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let str4=&quot;\(str1)\(str2)&quot; //=连接str1、str2</span><br><span class="line">//str4=&quot;hello, mandarava.&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let strArray=[&quot;apple&quot;, &quot;orange&quot;, &quot;cherry&quot;]</span><br><span class="line">let joinStr=&quot;,&quot;.join(strArray)</span><br><span class="line">//joinStr=&quot;apple,orange,cherry&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串与字符的连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let char1:Character=&quot;o&quot;</span><br><span class="line">var str1=&quot;hell&quot;</span><br><span class="line">let str2=str1+String(char1)</span><br><span class="line">//str2=&quot;hello&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let str3=&quot;\(str1)\(char1)&quot;</span><br><span class="line">//str3=&quot;hello&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">str1.append(char1)</span><br><span class="line">//str1=&quot;hello&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串与其它类型值的连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let xx=10</span><br><span class="line">let yy=10.8</span><br><span class="line">let str1=&quot;\(xx)+\(yy)=?&quot;</span><br><span class="line">//str1=&quot;10+10.8=?&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let str2=String(format: &quot;%i+%.1f=?&quot;, xx, yy)</span><br><span class="line">//str2=&quot;10+10.8=?&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串枚举字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">//Swift 1.2</span><br><span class="line">let str=&quot;mandarava&quot;</span><br><span class="line">for ch in str&#123;</span><br><span class="line"> println(ch)</span><br><span class="line">&#125;</span><br><span class="line">//-----------------------</span><br><span class="line">//Swift 2.0</span><br><span class="line">let str=&quot;mandarava&quot;</span><br><span class="line">for ch in str.characters&#123;</span><br><span class="line"> print(ch)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取字符串中指定索引处的字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let str=&quot;Mandarava&quot;</span><br><span class="line">let chr=str[advance(str.startIndex,2)] //Swift 1.2 //chr:Character=&quot;n&quot;</span><br><span class="line">let chr=str[str.startIndex.advancedBy(2)] //Swift 2.0 //chr:Character=&quot;n&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算字符串长度length</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let str=&quot;@你好啊&quot;</span><br><span class="line">let len1=count(str) //swift 1.2 //=4</span><br><span class="line">let len2=str.characters.count //swift 2.0 //=4</span><br><span class="line">let blen=str.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) //=10</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串比较</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let str1=&quot;hello,&quot;</span><br><span class="line">let str2=&quot;mandarava.&quot;</span><br><span class="line">let str3=&quot;hello,mandarava.&quot;</span><br><span class="line">let comp1 = str1==str2 //false</span><br><span class="line">let comp2 = str1+str2 == str3 //true</span><br><span class="line">let comp3 = str1 &lt; str2 //true</span><br><span class="line">let comp4 = str1 != str2 //true</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>是否包含子串contains</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let str1=&quot;hello,mandarava.&quot;</span><br><span class="line">let str2=&quot;mandarava&quot;</span><br><span class="line">let range=str1.rangeOfString(str2)</span><br><span class="line">if range != nil&#123;</span><br><span class="line"> //包含</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查找子串indexof</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var str=&quot;hi,Mandarava.&quot;</span><br><span class="line">let range=str.rangeOfString(&quot;Mandarava&quot;, options: NSStringCompareOptions.allZeros) //Swift 1.2</span><br><span class="line">let range=str.rangeOfString(&quot;Mandarava&quot;, options: NSStringCompareOptions()) //Swift 2.0</span><br><span class="line">let startIndex=range?.startIndex //=3</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>首字母大写capitalized</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var str1=&quot;mandarava is a flower.&quot;</span><br><span class="line">str1.capitalizedString</span><br><span class="line">//str1=&quot;Mandarava Is A Flower.</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>转换为大写字母uppercase</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var str1=&quot;hello, mandarava.&quot;</span><br><span class="line">str1=str1.uppercaseString</span><br><span class="line">//str1=&quot;HELLO, MANDARAVA.&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>转换为小写字母lowercase</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var str1=&quot;HELLO, MANDARAVA.&quot;</span><br><span class="line">str1=str1.lowercaseString</span><br><span class="line">//str1=&quot;hello, mandarava.&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>截取字符串substring</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let str1=&quot;hello,mandarava.&quot;</span><br><span class="line">let str2=str1.substringFromIndex(advance(str1.startIndex, 6)) //Swift 1.2</span><br><span class="line">let str2=str1.substringFromIndex(str1.startIndex.advancedBy(6)) //Swift 2.0</span><br><span class="line">//str2=&quot;mandarava.&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let str3=str1.substringToIndex(advance(str1.startIndex, 5)) //Swift 1.2</span><br><span class="line">let str3=str1.substringToIndex(str1.startIndex.advancedBy(5)) //Swift 2.0</span><br><span class="line">//str3=&quot;hello&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let range=Range&lt;String.Index&gt;(start: advance(str1.startIndex, 6), end: advance(str1.endIndex, -1)) //Swift 1.2</span><br><span class="line">let range=Range&lt;String.Index&gt;(start: str1.startIndex.advancedBy(6), end: str1.endIndex.advancedBy(-1)) //Swift 2.0</span><br><span class="line">let str4=str1.substringWithRange(range)</span><br><span class="line">//str4=&quot;mandarava&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串修剪trim</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let str1=&quot; mandarava.\n &quot;</span><br><span class="line">let str2=str1.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())</span><br><span class="line">//str2=&quot;mandarava.&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let str3=str1.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceCharacterSet())</span><br><span class="line">//str3=&quot;mandarava.\n&quot;</span><br><span class="line">//----------------------------------------</span><br><span class="line">let charset=NSCharacterSet(charactersInString:&quot; \n&quot;)</span><br><span class="line">let str4=str1.stringByTrimmingCharactersInSet(charset)</span><br><span class="line">//str4=&quot;mandarava.&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串的分解子串split</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">var str1=&quot;boy, girl, man, woman&quot;</span><br><span class="line">let str1Array=str1.componentsSeparatedByString(&quot;,&quot;)</span><br><span class="line">//str1Array=[&quot;boy&quot;, &quot; girl&quot;, &quot; man&quot;, &quot; woman&quot;]</span><br><span class="line">var str2=&quot;boy,girl,man 10 20 30&quot;</span><br><span class="line">let charset=NSCharacterSet(charactersInString:&quot;, &quot;)</span><br><span class="line">let str2Array=str2.componentsSeparatedByCharactersInSet(charset)</span><br><span class="line">//str2Array=[&quot;boy&quot;, &quot;girl&quot;, &quot;man&quot;, &quot;10&quot;, &quot;20&quot;, &quot;30&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>字符串替换replace</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">var str1=&quot;My name is Mandarava.&quot;</span><br><span class="line">let subRange=Range(start: str1.startIndex, end: advance(str1.startIndex, 2)) //Swift 1.2</span><br><span class="line">let subRange=Range(start: str1.startIndex, end: str1.startIndex.advancedBy(2)) //Swift 2.0</span><br><span class="line">str1.replaceRange(subRange, with: &quot;Your&quot;)</span><br><span class="line">//str1=&quot;Your name is Mandarava.&quot;</span><br><span class="line">var str2=&quot;hello, Mandarava.&quot;</span><br><span class="line">str2=str2.stringByReplacingOccurrencesOfString(&quot;Mandarava&quot;, withString: &quot;你好啊&quot;)</span><br><span class="line">//str2=&quot;hello, 你好啊.&quot;</span><br><span class="line">str2=str2.stringByReplacingOccurrencesOfString(&quot;你好啊&quot;, withString: &quot;Mandarava&quot;, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil)</span><br><span class="line">//str2=&quot;hello, Mandarava.&quot;</span><br><span class="line">string转换为Int/Long/Float/Double/Bool等</span><br><span class="line">var str1=&quot;100&quot;</span><br><span class="line">var i=str1.toInt()! //Swift 1.2 //=100</span><br><span class="line">var i=(str1 as NSString).integerValue //Swift 2.0 //=100</span><br><span class="line">var i=(str1 as NSString).intValue //=100</span><br><span class="line">var l=(str1 as NSString).longLongValue //=100</span><br><span class="line">var str2=&quot;10.8&quot;</span><br><span class="line">var f=(str2 as NSString).floatValue //=10.8</span><br><span class="line">var d=(str2 as NSString).doubleValue //=10.8</span><br><span class="line">var str3=&quot;true&quot;</span><br><span class="line">var b=(str3 as NSString).boolValue //=true</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/08/24/wireshark提示No-interface-found解决办法/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    wireshark提示No interface found解决办法
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/08/11/if-you-never-try-i-ll-never-know/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">if you never try i&#39;ll never know</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

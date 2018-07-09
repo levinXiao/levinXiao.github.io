@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶 | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶对 copy 和 mutableCopy 的概念还有一些不了解的同学，可以看看这篇文章https://www.jianshu.com/p/700f58eb0b86 有了上面的了解之后，我们看看这段代码 123456789101112NSMutableArray *eleInMutable = [NS">
+<meta name="keywords" content="iOS,oc">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶">
+<meta property="og:url" content="http://xiaoyu666.com/2018/02/01/iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶对 copy 和 mutableCopy 的概念还有一些不了解的同学，可以看看这篇文章https://www.jianshu.com/p/700f58eb0b86 有了上面的了解之后，我们看看这段代码 123456789101112NSMutableArray *eleInMutable = [NS">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.609Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶">
+<meta name="twitter:description" content="iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶对 copy 和 mutableCopy 的概念还有一些不了解的同学，可以看看这篇文章https://www.jianshu.com/p/700f58eb0b86 有了上面的了解之后，我们看看这段代码 123456789101112NSMutableArray *eleInMutable = [NS">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2018/02/01/iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶/">
+            <time datetime="2018-02-01T07:29:20.000Z" itemprop="datePublished">2018-02-01</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>, <a class="tag-link" href="/tags/oc/">oc</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h1 id="iOS-中-copy-和-mutableCopy-以及-one-level-deep-copy-进阶"><a href="#iOS-中-copy-和-mutableCopy-以及-one-level-deep-copy-进阶" class="headerlink" title="iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶"></a>iOS 中 copy 和 mutableCopy 以及 one-level-deep-copy 进阶</h1><p>对 copy 和 mutableCopy 的概念还有一些不了解的同学，可以看看这篇文章<br><a href="https://www.jianshu.com/p/700f58eb0b86" target="_blank" rel="noopener">https://www.jianshu.com/p/700f58eb0b86</a></p>
+<p>有了上面的了解之后，我们看看这段代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">NSMutableArray *eleInMutable = [NSMutableArray arrayWithObject:@&quot;1&quot;];</span><br><span class="line">//二维数组</span><br><span class="line">NSMutableArray *array1 = [NSMutableArray arrayWithObject:eleInMutable];</span><br><span class="line">//</span><br><span class="line">NSMutableArray *array2 = array1.mutableCopy;</span><br><span class="line">//像二维数组的第一个元素数组添加一个2</span><br><span class="line">[array2[0] addObject:@&quot;2&quot;];</span><br><span class="line"></span><br><span class="line">printPointer(array1);</span><br><span class="line">/* print result :  0x10070ec50 */</span><br><span class="line">printPointer(array2);</span><br><span class="line">/* print result :  0x10070ec80 */</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>在这里我们可以看到 pointer 的结果却是是不一样的。</p>
+<p><strong>但是！！！！！！！</strong></p>
+<p>如果我们打印 array1 和 array2 的结果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">printArray(array1);</span><br><span class="line">/* print result :  [[&quot;1&quot;,&quot;2&quot;]] */</span><br><span class="line">printArray(array2);</span><br><span class="line">/* print result :  [[&quot;1&quot;,&quot;2&quot;]] */</span><br></pre></td></tr></table></figure>
+<p>会惊奇的发现 array1 的结果 和 array2 的结果完全一样</p>
+<p><strong>这不科学，我一定是眼花了！！！！！！</strong></p>
+<p>不死心的我打印了 array1 和 array2 这两个二维数组的子数组的指针</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">printPointer(array1[0]);</span><br><span class="line">/* print result :  0x10070ee40 */</span><br><span class="line">printPointer(array2[0]);</span><br><span class="line">/* print result :  0x10070ee40 */</span><br></pre></td></tr></table></figure>
+<p><strong>居然完全一样，居然，会是，一样！！！！！！！！</strong></p>
+<h2 id="one-level-deep-copy"><a href="#one-level-deep-copy" class="headerlink" title="one-level-deep copy"></a>one-level-deep copy</h2><p>查看了<a href="https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/Collections/Articles/Copying.html#//apple_ref/doc/uid/TP40010162-SW3" target="_blank" rel="noopener">苹果官方文档</a>后，找到了对应的说明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">There are two ways to make deep copies of a collection.</span><br><span class="line">You can use the collection’s equivalent of initWithArray:copyItems: with YES as the second parameter.</span><br><span class="line">If you create a deep copy of a collection in this way,</span><br><span class="line">each object in the collection is sent a copyWithZone: message.</span><br><span class="line">If the objects in the collection have adopted the NSCopying protocol,</span><br><span class="line">the objects are deeply copied to the new collection,</span><br><span class="line">which is then the sole owner of the copied objects.</span><br><span class="line">If the objects do not adopt the NSCopying protocol,</span><br><span class="line">attempting to copy them in such a way results in a runtime error.</span><br><span class="line">However, copyWithZone: produces a shallow copy.</span><br><span class="line">This kind of copy is only capable of producing a one-level-deep copy.</span><br><span class="line">If you only need a one-level-deep copy,</span><br><span class="line">you can explicitly call for one as in Listing 2</span><br></pre></td></tr></table></figure>
+<p>发现了一个新的名词<strong>one-level-deep copy</strong>这个就是本文讨论的主题了</p>
+<h2 id="one-level-deep-copy-是什么"><a href="#one-level-deep-copy-是什么" class="headerlink" title="one-level-deep copy 是什么"></a>one-level-deep copy 是什么</h2><p>one-level-deep copy 从字面上理解，可以理解为单层深复制。<br>那 deep copy 我们就换一种说法，叫做完全复制。</p>
+<p>从苹果的官方文档来看，在 <strong><em>类集合元素</em></strong> 进行 mutableCopy 的时候，编译器会自动的进行单层深复制。在<strong><em>非类集合元素</em></strong> 进行 mutableCopy 的时候，编译器就会进行完全复制了。</p>
+<p>那这样就解释的通本文开头所展示的代码了。</p>
+<h2 id="类集合元素的完全复制"><a href="#类集合元素的完全复制" class="headerlink" title="类集合元素的完全复制"></a>类集合元素的完全复制</h2><p>那如果我们在实际项目的使用中，如果要对类集合元素进行完全复制，苹果官方文档也给出了答案</p>
+<p>方法1：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray *deepCopyArray=[[NSArray alloc] initWithArray:someArray copyItems:YES];</span><br></pre></td></tr></table></figure>
+<p>当 <strong>copyItems</strong> 参数为 <strong>YES</strong> 的时候，会进行完全复制。<br>同理，当 <strong>copyItems</strong> 参数为 <strong>NO</strong> 的时候，会进行单层深复制。</p>
+<p>方法2：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NSArray* trueDeepCopyArray = [NSKeyedUnarchiver unarchiveObjectWithData:</span><br><span class="line">          [NSKeyedArchiver archivedDataWithRootObject:oldArray]];</span><br></pre></td></tr></table></figure>
+<p>注意：要使用 NSKeyedUnarchiver 序列化对象要对对象实现 NSCoding 协议，当然，Foundation 库的 <strong>类集合元素（NSArray及其子类,NSSet及其子类,NSDictionary及其子类）</strong> 都实现了 NSCoding 协议</p>
+<h2 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h2><p>没有结语，只有代码</p>
+<p><a href="http://o7b4rtbje.bkt.clouddn.com/copytest.zip" target="_blank" rel="noopener">完整项目下载</a></p>
+<p>示例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">NSMutableArray *eleInMutable = [NSMutableArray arrayWithObject:@&quot;1&quot;];</span><br><span class="line">//二维数组</span><br><span class="line">NSMutableArray *array1 = [NSMutableArray arrayWithObject:eleInMutable];</span><br><span class="line">//</span><br><span class="line">NSMutableArray *array2 = array1.mutableCopy;</span><br><span class="line">//像二维数组的第一个元素数组添加一个2</span><br><span class="line">[array2[0] addObject:@&quot;2&quot;];</span><br><span class="line"></span><br><span class="line">//开始验证 mutablecopy 是否是深复制</span><br><span class="line">//如果是深复制 那么 array2[0]中添加元素不会影响 array1的结果</span><br><span class="line">printPointer(array1);</span><br><span class="line">/* print result :  0x10070ec50 */</span><br><span class="line">printPointer(array2);</span><br><span class="line">/* print result :  0x10070ec80 */</span><br><span class="line"></span><br><span class="line">printArray(array1);</span><br><span class="line">/* print result :  [[&quot;1&quot;,&quot;2&quot;]] */</span><br><span class="line">printArray(array2);</span><br><span class="line">/* print result :  [[&quot;1&quot;,&quot;2&quot;]] */</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">printPointer(array1[0]);</span><br><span class="line">/* print result :  0x10070ee40 */</span><br><span class="line">printPointer(array2[0]);</span><br><span class="line">/* print result :  0x10070ee40 */</span><br></pre></td></tr></table></figure>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2018/02/05/BlockMarcoUnit @weakify @strongify 一个快速防止 block retain cycle 的开源 marco/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    BlockMarcoUnit @weakify @strongify 一个快速防止 block retain cycle 的开源 marco
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2018/01/08/OC-一些用过的觉得还不错的开源库/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">OC 一些用过的觉得还不错的开源库</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

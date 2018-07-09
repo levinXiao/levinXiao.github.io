@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>用keychain持久化设备的唯一识别UDID | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="在iOS中,如果想获得手机的唯一标识UDID,与硬件相关而与软件无关,在Apple的API中是不提供的 CFUUID每次调用 CFUUIDCreate 系统都会返回一个全新的唯一 ID. 如果想永久保存这个 ID，需要自己处理，可以一次获取后，存在 NSUserDefaults，Keychain，Pasteboard 等，下次再从这其中取出。">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用keychain持久化设备的唯一识别UDID">
+<meta property="og:url" content="http://xiaoyu666.com/2016/09/28/用keychain持久化设备的唯一识别UDID/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="在iOS中,如果想获得手机的唯一标识UDID,与硬件相关而与软件无关,在Apple的API中是不提供的 CFUUID每次调用 CFUUIDCreate 系统都会返回一个全新的唯一 ID. 如果想永久保存这个 ID，需要自己处理，可以一次获取后，存在 NSUserDefaults，Keychain，Pasteboard 等，下次再从这其中取出。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.613Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用keychain持久化设备的唯一识别UDID">
+<meta name="twitter:description" content="在iOS中,如果想获得手机的唯一标识UDID,与硬件相关而与软件无关,在Apple的API中是不提供的 CFUUID每次调用 CFUUIDCreate 系统都会返回一个全新的唯一 ID. 如果想永久保存这个 ID，需要自己处理，可以一次获取后，存在 NSUserDefaults，Keychain，Pasteboard 等，下次再从这其中取出。">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-用keychain持久化设备的唯一识别UDID" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            用keychain持久化设备的唯一识别UDID
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/09/28/用keychain持久化设备的唯一识别UDID/">
+            <time datetime="2016-09-28T01:50:11.000Z" itemprop="datePublished">2016-09-28</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>在iOS中,如果想获得手机的唯一标识UDID,与硬件相关而与软件无关,在Apple的API中是不提供的</p>
+<h1 id="CFUUID"><a href="#CFUUID" class="headerlink" title="CFUUID"></a>CFUUID</h1><p>每次调用 CFUUIDCreate 系统都会返回一个全新的唯一 ID. 如果想永久保存这个 ID，需要自己处理，可以一次获取后，存在 NSUserDefaults，Keychain，Pasteboard 等，下次再从这其中取出。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (NSString *)createUUID &#123;</span><br><span class="line">    CFUUIDRef uuid = CFUUIDCreate(NULL);</span><br><span class="line">    CFStringRef string = CFUUIDCreateString(NULL, uuid);</span><br><span class="line">    CFRelease(uuid);</span><br><span class="line">    return (__bridge NSString *)string;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="NSUUID"><a href="#NSUUID" class="headerlink" title="NSUUID"></a>NSUUID</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *uuid = [[NSUUID UUID] UUIDString];</span><br></pre></td></tr></table></figure>
+<p>和 CFUUID 一样, 每次调用 NSUUID 都会获取到一个新的 UUID，需要自己保存获取到的 UUID。</p>
+<h1 id="Advertiser-Identifier"><a href="#Advertiser-Identifier" class="headerlink" title="Advertiser Identifier"></a>Advertiser Identifier</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *adId = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];</span><br></pre></td></tr></table></figure>
+<p><strong>AdvertisingIdentifier</strong> 由系统保持唯一性，同一个设备上所有应用获取到 advertisingIdentifier 的都是一样的。但有两种方法可以修改这个值，重置系统（设置 -&gt; 通用 -&gt; 还原 -&gt; 抹掉所有内容和设置）或者重置广告标识符（设置 -&gt; 隐私 -&gt; 广告 -&gt; 还原广告标识符），在这两种情况下都会生成新的<strong>AdvertisingIdentifier</strong>，依然无法保证设备唯一。</p>
+<h1 id="Identifier-for-Vendor-IDFV"><a href="#Identifier-for-Vendor-IDFV" class="headerlink" title="Identifier for Vendor (IDFV)"></a>Identifier for Vendor (IDFV)</h1><p>在Apple的API中,有一个<strong>Identifier for Vendor (IDFV)</strong>的方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSString *idfv = [[[UIDevice currentDevice] identifierForVendor] UUIDString];</span><br></pre></td></tr></table></figure>
+<p>在同一个设备上不同的 vendor 下的应用获取到的 IDFV 是不一样的，而同一个 vendor 下的不同应用获取的 IDFV 都是一样的。但如果用户删除了这个 vendor 的所有应用，再重新安装它们，IDFV 就会被重置，和之前的不一样，也不是设备唯一的。</p>
+<p>什么是 Vendor？ 一个 Vendor 是 CFBundleIdentifier——应用标识符的前缀</p>
+<p>举个例子， com.doubleencore.app1 和 com.doubleencore.app2 会获取到相同的 IDFV，因为它们有相通的 com.doubleencore。但 com.massivelyoverrated 和 net.doubleencore 获取到的则是不一样的 IDFV。</p>
+<p>以上所有 ID 都不能保证设备唯一，有什么方式可以获取设备唯一 ID？</p>
+<p>以 IDFV 为例，为保证用户在删除应用时，取到的 IDFV 仍和之前的一样，可以借助 Keychain。使用 SAMKeychain，可以很方便地设置 keychain。 需要注意的是， keychain 在同一个苹果账号的不同设备下是同步的，需要设置query.synchronizationMode = SAMKeychainQuerySynchronizationModeNo;，不在设备间同步这个值，这样不同设备获取到的便是不同的 ID，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">-(NSString *)getUniqueDeviceIdentifierAsString &#123;</span><br><span class="line">    NSString *appName=[[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString*)kCFBundleNameKey];</span><br><span class="line"></span><br><span class="line">    NSString *strApplicationUUID = [SAMKeychain passwordForService:appName account:@&quot;incoding&quot;];</span><br><span class="line">    if (strApplicationUUID == nil) &#123;</span><br><span class="line">        strApplicationUUID  = [[[UIDevice currentDevice] identifierForVendor] UUIDString];</span><br><span class="line"></span><br><span class="line">        NSError *error = nil;</span><br><span class="line">        SAMKeychainQuery *query = [[SAMKeychainQuery alloc] init];</span><br><span class="line">        query.service = appName;</span><br><span class="line">        query.account = @&quot;incoding&quot;;</span><br><span class="line">        query.password = strApplicationUUID;</span><br><span class="line">        query.synchronizationMode = SAMKeychainQuerySynchronizationModeNo;</span><br><span class="line">        [query save:&amp;error];</span><br><span class="line">    &#125;</span><br><span class="line">    return strApplicationUUID;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2016/10/10/macosx-sierra安全性和隐私中找不到任何来源的解决办法/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    macosx sierra安全性和隐私中找不到任何来源的解决办法
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2016/09/08/OC中nil-Nil-NULL-NSNull的用法和来历/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">OC中nil/Nil/NULL/NSNull的用法和来历</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <meta charset="utf-8">
+    
+    <title>iOS UIWebView键盘处理(转载) | YuXiao&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="转载自:http://blog.csdn.net/assholeu/article/details/38714123 如果你有下面的问题，此文也许会帮到你。  键盘遮盖了UIWebView。 如何拖动UIWebView来移除键盘。 键盘出现时UIWebView里面的Content内容向上移动，以至聚焦的文本框超出了UIWebView的可视区域。 如何在键盘弹出时禁止UIWebView里面的Cont">
+<meta name="keywords" content="iOS,oc,键盘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS UIWebView键盘处理(转载)">
+<meta property="og:url" content="http://xiaoyu666.com/2017/04/17/iOS UIWebView键盘处理(转载)/index.html">
+<meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="转载自:http://blog.csdn.net/assholeu/article/details/38714123 如果你有下面的问题，此文也许会帮到你。  键盘遮盖了UIWebView。 如何拖动UIWebView来移除键盘。 键盘出现时UIWebView里面的Content内容向上移动，以至聚焦的文本框超出了UIWebView的可视区域。 如何在键盘弹出时禁止UIWebView里面的Cont">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-09T03:40:15.609Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS UIWebView键盘处理(转载)">
+<meta name="twitter:description" content="转载自:http://blog.csdn.net/assholeu/article/details/38714123 如果你有下面的问题，此文也许会帮到你。  键盘遮盖了UIWebView。 如何拖动UIWebView来移除键盘。 键盘出现时UIWebView里面的Content内容向上移动，以至聚焦的文本框超出了UIWebView的可视区域。 如何在键盘弹出时禁止UIWebView里面的Cont">
+    
+
+    
+
+    
+        <link rel="icon" href="/css/images/favicon.png" />
+    
+
+    <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/libs/open-sans/styles.css">
+    <link rel="stylesheet" href="/libs/source-code-pro/styles.css">
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    
+        <link rel="stylesheet" href="/libs/lightgallery/css/lightgallery.min.css">
+    
+    
+        <link rel="stylesheet" href="/libs/justified-gallery/justifiedGallery.min.css">
+    
+    
+    
+    
+
+
+</head>
+
+<body>
+    <div id="container">
+        <header id="header">
+    <div id="header-main" class="header-inner">
+        <div class="outer">
+            <a href="/" id="logo">
+                <i class="logo"></i>
+                <span class="site-title">YuXiao&#39;s blog</span>
+            </a>
+            <nav id="main-nav">
+                
+                    <a class="main-nav-link" href="/.">主页</a>
+                
+                    <a class="main-nav-link" href="/archives">归档</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao">Github</a>
+                
+                    <a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a>
+                
+            </nav>
+            
+                
+                <nav id="sub-nav">
+                    <div class="profile" id="profile-nav">
+                        <a id="profile-anchor" href="javascript:;">
+                            <img class="avatar" src="/css/images/avatar.png" />
+                            <i class="fa fa-caret-down"></i>
+                        </a>
+                    </div>
+                </nav>
+            
+            <div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="想要查找什么..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/js/insight.js"></script>
+
+</div>
+        </div>
+    </div>
+    <div id="main-nav-mobile" class="header-sub header-inner">
+        <table class="menu outer">
+            <tr>
+                
+                    <td><a class="main-nav-link" href="/.">主页</a></td>
+                
+                    <td><a class="main-nav-link" href="/archives">归档</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao">Github</a></td>
+                
+                    <td><a class="main-nav-link" href="https://github.com/levinXiao/wechat-QRCode">WeChat</a></td>
+                
+                <td>
+                    
+    <div class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="搜索" />
+    </div>
+
+                </td>
+            </tr>
+        </table>
+    </div>
+</header>
+
+        <div class="outer">
+            
+                
+
+<aside id="profile" class="profile-fixed">
+    <div class="inner profile-inner">
+        <div class="base-info profile-block">
+            <img id="avatar" src="/css/images/avatar.png" />
+            <h2 id="name">xiaoyu</h2>
+            <h3 id="title">iOS Developer work on DiDi</h3>
+            <span id="location"><i class="fa fa-map-marker"></i>Beijing, China</span>
+            <a id="follow" target="_blank" href="https://github.com/levinXiao">关注我</a>
+        </div>
+        <div class="article-info profile-block">
+            <div class="article-info-block">
+                43
+                <span>文章</span>
+            </div>
+            <div class="article-info-block">
+                35
+                <span>标签</span>
+            </div>
+        </div>
+        
+        <div class="profile-block social-links">
+            <table>
+                <tr>
+                    
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao" target="_blank" title="github" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </td>
+                    
+                    <td>
+                        <a href="https://github.com/levinXiao/wechat-QRCode" target="_blank" title="wechat" >
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                    </td>
+                    
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+</aside>
+
+            
+            <section id="main"><article id="post-iOS UIWebView键盘处理(转载)" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 class="article-title" itemprop="name">
+            iOS UIWebView键盘处理(转载)
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2017/04/17/iOS UIWebView键盘处理(转载)/">
+            <time datetime="2017-04-17T13:14:52.000Z" itemprop="datePublished">2017-04-17</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>, <a class="tag-link" href="/tags/oc/">oc</a>, <a class="tag-link" href="/tags/键盘/">键盘</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <p>转载自:<br><a href="http://blog.csdn.net/assholeu/article/details/38714123" target="_blank" rel="noopener">http://blog.csdn.net/assholeu/article/details/38714123</a></p>
+<p>如果你有下面的问题，此文也许会帮到你。</p>
+<ol>
+<li>键盘遮盖了UIWebView。</li>
+<li>如何拖动UIWebView来移除键盘。</li>
+<li>键盘出现时UIWebView里面的Content内容向上移动，以至聚焦的文本框超出了UIWebView的可视区域。</li>
+<li>如何在键盘弹出时禁止UIWebView里面的Content向上移动。</li>
+<li>无法在UIWebView中获取到坐标，来计算contentOffset得到想要展示的结果。</li>
+</ol>
+<a id="more"></a>
+<p>##一步一步说明：</p>
+<p>#####1.  唤出移除键盘<br>只要点击UIWebView里面的html文本框控件，会自动弹出键盘。当然你需要获取键盘的信息（高度等），方法还是使用UIViewController+Notification的方式，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">// UIKeyboardWillShowNotification和UIKeyboardWillHideNotification为键盘弹出或移除时iOS系统post notification的名字，这里只需要定义self为这个通知的接收者即可。  </span><br><span class="line">    // viewWillAppear:和viewWillDisappear:大家应该都很清楚，这两个方法分别在self loadView和removefromsuperview后执行。  </span><br><span class="line">    // 特别注意：这里的object参数需要是nil,不然取不到键盘的userInfo  </span><br><span class="line">    - (void)viewWillAppear:(BOOL)animated &#123;  </span><br><span class="line">        [super viewWillAppear:animated];  </span><br><span class="line">        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];  </span><br><span class="line">        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];  </span><br><span class="line"></span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    - (void)viewWillDisappear:(BOOL)animated &#123;  </span><br><span class="line">        [super viewWillDisappear:animated];  </span><br><span class="line">        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];  </span><br><span class="line">        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    - (void)keyboardWillShow:(NSNotification *)notification &#123;  </span><br><span class="line">        NSDictionary *userInfo = [notification userInfo];  </span><br><span class="line">        NSValue* value = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];  </span><br><span class="line">        CGRect keyboardRect = [value CGRectValue]; // 这里得到了键盘的frame  </span><br><span class="line">        // 你的操作，如键盘出现，控制视图上移等  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    - (void)keyboardWillHide:(NSNotification *)notification &#123;  </span><br><span class="line">        // 获取info同上面的方法  </span><br><span class="line">        // 你的操作，如键盘移除，控制视图还原等  </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>#####2. 通过拖动UIWebView来移除键盘</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">self.webView.scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag; // 当拖动时移除键盘</span><br></pre></td></tr></table></figure>
+<p>如果是iOS7以下，请参照 6 来设置，大概思路，先添加一个private的flag表明现在键盘是否存在，当存在时，通过 6 来获取事件关闭键盘。</p>
+<p>#####3. 键盘遮盖了UIWebView<br>这个的解决方法可在 1 中的keyboardWillShow:里面操作，通过改变webView的origin来实现。</p>
+<p>#####4. 键盘出现时UIWebView里面的Content内容向上移动，以至聚焦的文本框超出了UIWebView的可视区域<br>在UIWebView中，只要键盘出现，UIWebView肯定会向上移动，至于合不合适就不好说了，如果不合适，就只用禁用自动移动。</p>
+<p>#####5. 如何在键盘弹出时禁止UIWebView里面的Content向上移动<br>这个方法，我也找了很久，但是还是找到了，感谢强大的网友，代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@interface XXX : UIViewController&lt;UIScrollViewDelegate&gt; // 添加UIScrollViewDelegate， step 1  </span><br><span class="line"></span><br><span class="line">    self.webView.scrollView.delegate = self; // 注册代理， step 2  </span><br><span class="line"></span><br><span class="line">    - (UIView*)viewForZoomingInScrollView:(UIScrollView*)scrollView&#123; // 实现代理方法， step 3  </span><br><span class="line">            return nil;  </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>#####6. 如何在UIWebView中获取点击坐标<br>众所周知，UIWebView会吃掉所有的touch事件，不然也不会有那么多人费工夫弄javascript了，但是不能设置不代表不能以另外一种方式代替，大概思路：给webView的superView添加手势，然后通过实现多手势过滤设置来实现，为什么要设置多手势过滤呢？我这里说明一下，由于UIWebView默认有自己的手势，它会拦截掉你的手势，以至 superView无法接收手势，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@interface XXX : UIViewController&lt;UIGestureRecognizerDelegate&gt; // 添加UIGestureRecognizerDelegate， step 1  </span><br><span class="line"></span><br><span class="line">    // 添加手势， step 2  </span><br><span class="line">    UITapGestureRecognizer *webTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(webTap:)];  </span><br><span class="line">    webTap.numberOfTouchesRequired = 1;  </span><br><span class="line">    webTap.numberOfTapsRequired = 1;  </span><br><span class="line">    webTap.delegate = self;  </span><br><span class="line">    webTap.cancelsTouchesInView = NO;  </span><br><span class="line">    [self.view addGestureRecognizer:webTap];  </span><br><span class="line"></span><br><span class="line">    // 设置过滤，ruturn YES为同时接收，至此手势可以透过webView，让你的superView也可以接收到了， step 3  </span><br><span class="line">    -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer&#123;  </span><br><span class="line">            return YES;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    - (void)webTap:(UITapGestureRecognizer *)sender&#123;  </span><br><span class="line">            CGPoint tapPoint = [sender locationInView:self.webView.scrollView]; // 获取相对于webView中的坐标，如果改成self.view则获取相对于superView中的坐标， step 4  </span><br><span class="line">            NSLog(@&quot;tapPoint x:%f y:%f&quot;,tapPoint.x,tapPoint.y);  </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>UIWebView键盘处理能想起的就只有这些了，欢迎大家补充。<br>转载自:<br><a href="http://blog.csdn.net/assholeu/article/details/38714123" target="_blank" rel="noopener">http://blog.csdn.net/assholeu/article/details/38714123</a></p>
+<p>资料参考：<br>感谢 <a href="http://blog.csdn.net/abel_tu/article/details/12134261" target="_blank" rel="noopener">http://blog.csdn.net/abel_tu/article/details/12134261</a></p>
+
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+        <a href="/2017/05/12/iOS图片拉伸技巧—— resizableImageWithCapInsets/" id="article-nav-newer" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">上一篇</strong>
+            <div class="article-nav-title">
+                
+                    iOS图片拉伸技巧—— resizableImageWithCapInsets
+                
+            </div>
+        </a>
+    
+    
+        <a href="/2017/03/15/在Xcode8下打印太多无用的log的解决办法/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">在Xcode8下打印太多无用的log的解决办法</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
+</section>
+            
+                
+<aside id="sidebar">
+   
+        
+    <div class="widget-wrap">
+        <h3 class="widget-title">分类</h3>
+        <div class="widget">
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+        </div>
+    </div>
+
+    
+        
+    <div class="widget-wrap widget-list">
+        <h3 class="widget-title">链接</h3>
+        <div class="widget">
+            <ul>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao">github</a>
+                    </li>
+                
+                    <li>
+                        <a href="">xiaoamani@qq.com</a>
+                    </li>
+                
+                    <li>
+                        <a href="https://github.com/levinXiao/wechat-QRCode">wechat</a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+
+
+    
+    <div id="toTop" class="fa fa-angle-up"></div>
+</aside>
+
+            
+        </div>
+        <footer id="footer">
+    <div class="outer">
+        <div id="footer-info" class="inner">
+            &copy; 2018 肖宇<br>
+            Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>. Theme by <a href="http://github.com/ppoffice">PPOffice</a>
+        </div>
+    </div>
+</footer>
+        
+
+
+    
+        <script src="/libs/lightgallery/js/lightgallery.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-thumbnail.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-pager.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-autoplay.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-fullscreen.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-zoom.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-hash.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-share.min.js"></script>
+        <script src="/libs/lightgallery/js/lg-video.min.js"></script>
+    
+    
+        <script src="/libs/justified-gallery/jquery.justifiedGallery.min.js"></script>
+    
+    
+
+
+
+<!-- Custom Scripts -->
+<script src="/js/main.js"></script>
+
+    </div>
+</body>
+</html>
