@@ -151,11 +151,11 @@
         </div>
         <div class="article-info profile-block">
             <div class="article-info-block">
-                43
+                44
                 <span>文章</span>
             </div>
             <div class="article-info-block">
-                35
+                36
                 <span>标签</span>
             </div>
         </div>
@@ -254,7 +254,7 @@
 
 
 
-    <article id="post-Docker容器配置gogs" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-iOS9使用提示框的正确实现方式(UIAlertView is deprecated)" class="article article-type-post" itemscope itemprop="blogPost">
     <div class="article-inner">
         
         
@@ -262,7 +262,7 @@
                 
     
         <h1 itemprop="name">
-            <a class="article-title" href="/2016/08/06/Docker容器配置gogs/">Docker容器配置gogs</a>
+            <a class="article-title" href="/2016/08/06/iOS9使用提示框的正确实现方式(UIAlertView is deprecated)/">iOS9使用提示框的正确实现方式(UIAlertView is deprecated)</a>
         </h1>
     
 
@@ -271,7 +271,7 @@
                         
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2016/08/06/Docker容器配置gogs/">
+        <a href="/2016/08/06/iOS9使用提示框的正确实现方式(UIAlertView is deprecated)/">
             <time datetime="2016-08-06T13:14:52.000Z" itemprop="datePublished">2016-08-06</time>
         </a>
     </div>
@@ -280,13 +280,13 @@
                         
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/linux/">linux</a>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
     </div>
 
                         
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/docker/">docker</a>, <a class="tag-link" href="/tags/git/">git</a>, <a class="tag-link" href="/tags/gogs/">gogs</a>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>, <a class="tag-link" href="/tags/oc/">oc</a>
     </div>
 
                     </div>
@@ -296,12 +296,77 @@
         
         <div class="article-entry" itemprop="articleBody">
         
-            
-            <p>#gogs介绍<br><a href="https://gogs.io/" target="_blank" rel="noopener">https://gogs.io/</a></p>
-<p>#docker方式部署gogs<br><a href="https://github.com/gogits/gogs/tree/master/docker" target="_blank" rel="noopener">https://github.com/gogits/gogs/tree/master/docker</a></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># Pull image from Docker Hub.</span><br><span class="line">$ docker pull gogs/gogs</span><br><span class="line"></span><br><span class="line"># Create local directory for volume.</span><br><span class="line">$ mkdir -p /var/gogs</span><br><span class="line"></span><br><span class="line"># Use `docker run` for the first time.</span><br><span class="line">$ docker run --name=gogs -p 10022:22 -p 10080:3000 -v /var/gogs:/data gogs/gogs</span><br><span class="line"></span><br><span class="line"># Use `docker start` if you have stopped it.</span><br><span class="line">$ docker start gogs</span><br></pre></td></tr></table></figure>
-<p>将gogs运行端口绑定到3000端口后就ok了<br>这样当nginx启动完成后反向代理就成功了</p>
+            <p><p>#前言</p>
+<p>在从iOS8到iOS9的升级过程中，弹出提示框的方式有了很大的改变，在Xcode7 ，iOS9.0的SDK中，已经明确提示不再推荐使用UIAlertView，而只能使用UIAlertController，我们通过代码来演示一下。<br>我通过点击一个按钮，然后弹出提示框，代码示例如下：</p></p>
+            <p class="article-more-link">
+                <a href="/2016/08/06/iOS9使用提示框的正确实现方式(UIAlertView is deprecated)/#more">查看更多</a>
+            </p>
+        
+        </div>
+        <footer class="article-footer">
+            <div class="share-container">
 
+
+
+</div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+</article>
+
+
+
+    <article id="post-(转载)OC-如何让图片长的好看（contentMode）" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
+                
+    
+        <h1 itemprop="name">
+            <a class="article-title" href="/2016/08/06/(转载)OC-如何让图片长的好看（contentMode）/">(转载)OC-如何让图片长的好看（contentMode）</a>
+        </h1>
+    
+
+                
+                    <div class="article-meta">
+                        
+    <div class="article-date">
+        <i class="fa fa-calendar"></i>
+        <a href="/2016/08/06/(转载)OC-如何让图片长的好看（contentMode）/">
+            <time datetime="2016-08-06T13:14:52.000Z" itemprop="datePublished">2016-08-06</time>
+        </a>
+    </div>
+
+
+                        
+    <div class="article-category">
+    	<i class="fa fa-folder"></i>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
+    </div>
+
+                        
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/iOS/">iOS</a>, <a class="tag-link" href="/tags/oc/">oc</a>, <a class="tag-link" href="/tags/图片处理/">图片处理</a>
+    </div>
+
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            <p><p>转载至CSDN <a href="http://blog.csdn.net/yi_zz32/article/details/50381762" target="_blank" rel="noopener">http://blog.csdn.net/yi_zz32/article/details/50381762</a></p>
+<p>我们在开发中，经常要在view，tableView，等显示图片，比如我们发微博（带有图片的），那么我们常常要考虑如何处理这些图片，是否拉伸，拉伸到什么样的效果等等，常常是需要考虑的问题。<br></p>
+            <p class="article-more-link">
+                <a href="/2016/08/06/(转载)OC-如何让图片长的好看（contentMode）/#more">查看更多</a>
+            </p>
         
         </div>
         <footer class="article-footer">
@@ -399,7 +464,7 @@
     <div class="widget-wrap">
         <h3 class="widget-title">分类</h3>
         <div class="widget">
-            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">26</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
+            <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/iOS/">iOS</a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/linux/">linux</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/macOS/">macOS</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/oc/">oc</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/sqlite/">sqlite</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/swift/">swift</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/生活/">生活</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/网络/">网络</a><span class="category-list-count">1</span></li></ul>
         </div>
     </div>
 

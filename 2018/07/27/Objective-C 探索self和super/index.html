@@ -3,16 +3,20 @@
 <head>
     <meta charset="utf-8">
     
-    <title>标签: gogs | YuXiao&#39;s blog</title>
+    <title>Objective-C 探索self和super | YuXiao&#39;s blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="keywords" content="肖宇,iOS,oc,OC,Swift">
-<meta property="og:type" content="website">
-<meta property="og:title" content="YuXiao&#39;s blog">
-<meta property="og:url" content="http://xiaoyu666.com/tags/gogs/index.html">
+    <meta name="description" content="从问题出发相信每个iOSer都碰到过这个问题 12345678910111213@interface Son : Father@end@implementation Son- (instancetype)init&amp;#123;    self = [super init];    if (self) &amp;#123;        NSLog(@&amp;quot;%@&amp;quot;, NSStringFromC">
+<meta name="keywords" content="oc,runtime">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Objective-C 探索self和super">
+<meta property="og:url" content="http://xiaoyu666.com/2018/07/27/Objective-C 探索self和super/index.html">
 <meta property="og:site_name" content="YuXiao&#39;s blog">
+<meta property="og:description" content="从问题出发相信每个iOSer都碰到过这个问题 12345678910111213@interface Son : Father@end@implementation Son- (instancetype)init&amp;#123;    self = [super init];    if (self) &amp;#123;        NSLog(@&amp;quot;%@&amp;quot;, NSStringFromC">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-07-27T10:41:44.562Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="YuXiao&#39;s blog">
+<meta name="twitter:title" content="Objective-C 探索self和super">
+<meta name="twitter:description" content="从问题出发相信每个iOSer都碰到过这个问题 12345678910111213@interface Son : Father@end@implementation Son- (instancetype)init&amp;#123;    self = [super init];    if (self) &amp;#123;        NSLog(@&amp;quot;%@&amp;quot;, NSStringFromC">
     
 
     
@@ -185,50 +189,109 @@
 </aside>
 
             
-            <section id="main">
-<div class="timeline timeline-wrap">
-    <div class="timeline-row timeline-row-major">
-        <span class="node"><i class="fa fa-tag"></i></span>
-        <h1 class="title">#gogs</h1>
-    </div>
-    
-        <div class="timeline-row">
-            <span class="node"></span>
-            <div class="content">
+            <section id="main"><article id="post-Objective-C 探索self和super" class="article article-type-post" itemscope itemprop="blogPost">
+    <div class="article-inner">
+        
+        
+            <header class="article-header">
                 
     
-        <h1 itemprop="name">
-            <a class="timeline-article-title" href="/2016/08/06/Docker容器配置gogs/">Docker容器配置gogs</a>
+        <h1 class="article-title" itemprop="name">
+            Objective-C 探索self和super
         </h1>
     
 
-                <div class="article-meta">
-                    
+                
+                    <div class="article-meta">
+                        
     <div class="article-date">
         <i class="fa fa-calendar"></i>
-        <a href="/2016/08/06/Docker容器配置gogs/">
-            <time datetime="2016-08-06T13:14:52.000Z" itemprop="datePublished">2016-08-06</time>
+        <a href="/2018/07/27/Objective-C 探索self和super/">
+            <time datetime="2018-07-27T10:28:52.000Z" itemprop="datePublished">2018-07-27</time>
         </a>
     </div>
 
 
-                    
+                        
     <div class="article-category">
     	<i class="fa fa-folder"></i>
-        <a class="article-category-link" href="/categories/linux/">linux</a>
+        <a class="article-category-link" href="/categories/iOS/">iOS</a>
     </div>
 
-                    
+                        
     <div class="article-tag">
         <i class="fa fa-tag"></i>
-        <a class="tag-link" href="/tags/docker/">docker</a>, <a class="tag-link" href="/tags/git/">git</a>, <a class="tag-link" href="/tags/gogs/">gogs</a>
+        <a class="tag-link" href="/tags/oc/">oc</a>, <a class="tag-link" href="/tags/runtime/">runtime</a>
     </div>
 
-                </div>
-            </div>
+                    </div>
+                
+            </header>
+        
+        
+        <div class="article-entry" itemprop="articleBody">
+        
+            
+            <h2 id="从问题出发"><a href="#从问题出发" class="headerlink" title="从问题出发"></a>从问题出发</h2><p>相信每个iOSer都碰到过这个问题</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@interface Son : Father</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Son</span><br><span class="line">- (instancetype)init&#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        NSLog(@&quot;%@&quot;, NSStringFromClass([self class]));</span><br><span class="line">        NSLog(@&quot;%@&quot;, NSStringFromClass([super class]));</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>以上代码的打印结果</p>
+<a id="more"></a>
+<p>首先先公布下答案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Son</span><br><span class="line">Son</span><br></pre></td></tr></table></figure>
+<p>按照面向对象的思想应该是分别打印 <strong>Son</strong> 和 <strong>Father</strong></p>
+<p>但是实际结果两句代码都打印的是 <strong>Son</strong> 这个是为什么呢</p>
+<h2 id="self-和-super"><a href="#self-和-super" class="headerlink" title="self 和 super"></a>self 和 super</h2><p>self是类的隐藏参数，指向当前调用方法的对象。而super并不是如我们所想是指向当前对象父类的指针。其实super是一个编译器标识符，在运行时中与self相同，指向同一个消息接受者，只是self会优先在当前类的methodLists中查找方法，而super则是优先从父类中查找。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ clang -rewrite-objc main.m</span><br></pre></td></tr></table></figure>
+<p>可以看到运行时代码 如下（去掉无用代码且简化后）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSend((id)self, sel_registerName(&quot;class&quot;));</span><br><span class="line"></span><br><span class="line">objc_msgSendSuper((__rw_objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(&quot;Son&quot;))&#125;, sel_registerName(&quot;class&quot;));</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>函数中的```self```参数是指指向接收消息的类的实例的指针，即消息接受者，而```op```参数则是指处理该消息的selector；```objc_msgSendSuper```函数中的参数```super```则是一个```objc_super```结构体，objc_super结构体定义如下：</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>/// Specifies the superclass of an instance.<br>struct objc_super {<br>    /// Specifies an instance of a class.<br>    __unsafe_unretained id receiver;</p>
+<pre><code>/// Specifies the particular superclass of the instance to message. 
+__unsafe_unretained Class super_class;
+
+/* super_class is the first class to search */
+</code></pre><p>};<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">其中```receiver```是指类的实例，```super_class```则是指该实例的父类。可以看到在编译后的C++代码中有个```__rw_objc_super```结构体：</span><br></pre></td></tr></table></figure></p>
+<p>struct <strong>rw_objc_super {<br>    struct objc_object <em>object;<br>    struct objc_object </em>superClass; 
+    </strong>rw_objc_super(struct objc_object <em>o, struct objc_object </em>s) : object(o), superClass(s) {}<br>};<br><code>`</code></p>
+<p>通过<code>(__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass(&quot;Son&quot;))}</code>该段代码可知：</p>
+<p>我们把<code>self</code>以及<code>Son</code>的父类通过结构体的构造方法构造了一个<code>__rw_objc_super</code>结构体，也就是<code>objc_super</code>。</p>
+<p>因此<code>objc_super</code>结构体中的 <strong>receiver</strong> 就是 <strong>self</strong> 。所以<code>[self class]</code>和<code>[super class]</code>指向的是同一个消息接受者，只是<code>self</code>会优先从当前类的实现中寻找方法处理消息，而<code>super</code>则是会优先从<code>objc_super</code>结构体中的<code>super_class</code>也就是父类的实现中查找。<strong>Father</strong> 及<strong>Son</strong> 中均未实现<code>- (Class)class;</code>方法，因此会逐级向上查找最终调用基类<code>NSObject</code>的<code>- (Class)class;</code>方法。</p>
+<p>既然消息接受者是<code>self</code>，而<code>[self class]</code>和<code>[super class]</code>指向的是同一个消息接受者，因此该段代码均打印 <code>Son</code>。</p>
+
+        
         </div>
-    
+        <footer class="article-footer">
+            <div class="share-container">
+
+
+
 </div>
+
+            
+    
+
+        </footer>
+    </div>
+    
+        
+<nav id="article-nav">
+    
+    
+        <a href="/2018/05/16/自定义同步和异步-NSOperation-代码模板/" id="article-nav-older" class="article-nav-link-wrap">
+            <strong class="article-nav-caption">下一篇</strong>
+            <div class="article-nav-title">自定义同步和异步 NSOperation 代码模板</div>
+        </a>
+    
+</nav>
+
+
+    
+</article>
+
+
+    
+    
+
 </section>
             
                 
